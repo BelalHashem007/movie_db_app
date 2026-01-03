@@ -1,7 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice/authSlice";
+import movieApi from "./apiSlice";
 
-const store = configureStore({ reducer: { auth: authSlice.reducer } });
+const store = configureStore({
+  reducer: {
+    auth: authSlice.reducer,
+    [movieApi.reducerPath]: movieApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(movieApi.middleware),
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
