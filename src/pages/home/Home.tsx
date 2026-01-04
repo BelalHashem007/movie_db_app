@@ -11,9 +11,9 @@ export default function Home() {
   const { data } = useGetPopularMoviesQuery(undefined, { skip: !token });
 
   return (
-    <>
+    <div className="mx-2.5 my-5 flex gap-5 flex-col min-[500px]:mx-5">
       <section>
-        <div className="flex gap-2.5 m-5">
+        <div className="flex gap-2.5">
           <Button name="Popular" filter={filterMovies} set={setFilterMovies} />
           <Button
             name="Now Playing"
@@ -28,12 +28,16 @@ export default function Home() {
           <Button name="Upcoming" filter={filterMovies} set={setFilterMovies} />
         </div>
       </section>
-      <section>
-        <ul>
-          {data?.map((movie)=> <li key={movie.id}><Movie movie={movie}/></li>)}
-        </ul>
-      </section>
-    </>
+        <section>
+          <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
+            {data?.map((movie) => (
+              <li key={movie.id}>
+                <Movie movie={movie} />
+              </li>
+            ))}
+          </ul>
+        </section>
+    </div>
   );
 }
 
