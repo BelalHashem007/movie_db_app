@@ -12,6 +12,12 @@ type MovieResponse = {
 
 interface ApiResponse {
   results: MovieResponse[];
+  page:number| string
+}
+
+interface FilteredResponse {
+  results: Movie[]
+  page:number | string
 }
 
 const movieApi = createApi({
@@ -30,17 +36,18 @@ const movieApi = createApi({
     getAuthentication: builder.query<object, void>({
       query: () => "authentication",
     }),
-    getPopularMovies: builder.query<Movie[], void>({
-      query: () =>
-        "discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc",
+    getPopularMovies: builder.query<FilteredResponse, string | number>({
+      query: (page) =>
+        `discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`,
       transformResponse(res: ApiResponse) {
-        return res.results.map((res) => ({
+        const results: Movie[] = res.results.map((res) => ({
           id: res.id,
           title: res.title,
           img_url: res.poster_path,
           release_date: res.release_date,
           vote_average: res.vote_average,
         }));
+        return {page:res.page,results}
       },
     }),
   }),
