@@ -1,26 +1,46 @@
-import { useEffect, useState } from "react";
-import { useGetPopularMoviesQuery } from "../../app/apiSlice";
+import { useEffect } from "react";
+import { useGetMovieListsQuery } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import Movie from "../../components/Movie";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useParams, NavLink } from "react-router";
 import Pagination from "../../components/Pagination";
+import type { Category } from "../../app/apiSlice";
 
-type FilterMovies = "Popular" | "Now Playing" | "Top Rated" | "Upcoming";
+const CATEGORY_MAP: Record<string, Category> = {
+  popular: "popular",
+  "now-playing": "now_playing",
+  "top-rated": "top_rated",
+  upcoming: "upcoming",
+};
 
 export default function Home() {
-  const [filterMovies, setFilterMovies] = useState<FilterMovies>("Popular");
+  const { category } = useParams();
   const token = useAppSelector((state) => state.auth.token);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const page = searchParams.get("page") || "1";
-  const { data, isFetching, isLoading } = useGetPopularMoviesQuery(page, {
-    skip: !token,
-  });
+  const activeCategory: Category =
+    (category && CATEGORY_MAP[category]) || "popular";
+
+  const { data, isFetching, isLoading } = useGetMovieListsQuery(
+    { page, category: activeCategory },
+    {
+      skip: !token,
+    }
+  );
+
+  const buttons = [
+    { label: "Popular", path: "" },
+    { label: "Now Playing", path: "now-playing" },
+    { label: "Top Rated", path: "top-rated" },
+    { label: "Upcoming", path: "upcoming" },
+  ];
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [page]);
 
   if (isLoading) return <p className="text-3xl font-bold">Loading...</p>;
-
 
   function handlePagination(page: number) {
     if (!isFetching) {
@@ -32,18 +52,9 @@ export default function Home() {
     <div className="mx-2.5 my-5 flex gap-5 flex-col min-[500px]:mx-5">
       <section>
         <div className="flex gap-2.5">
-          <Button name="Popular" filter={filterMovies} set={setFilterMovies} />
-          <Button
-            name="Now Playing"
-            filter={filterMovies}
-            set={setFilterMovies}
-          />
-          <Button
-            name="Top Rated"
-            filter={filterMovies}
-            set={setFilterMovies}
-          />
-          <Button name="Upcoming" filter={filterMovies} set={setFilterMovies} />
+          {buttons.map((btn) => (
+            <CategoryButton key={btn.path} label={btn.label} path={btn.path} />
+          ))}
         </div>
       </section>
       <section>
@@ -57,32 +68,25 @@ export default function Home() {
       </section>
 
       <section className="self-center">
-        <Pagination handlePagination={handlePagination} numPage={Number(page)}/>
+        <Pagination
+          handlePagination={handlePagination}
+          numPage={Number(page)}
+        />
       </section>
     </div>
   );
 }
 
-function Button({
-  name,
-  filter,
-  set,
-}: {
-  name: FilterMovies;
-  filter: FilterMovies;
-  set: React.Dispatch<React.SetStateAction<FilterMovies>>;
-}) {
-  function handleFilterUpdate() {
-    set(name);
-  }
+function CategoryButton({ label, path }: { label: string; path: string }) {
   return (
-    <button
-      onClick={handleFilterUpdate}
-      className={`${
-        filter === name && "bg-black!"
-      } bg-red-400 text-white p-2 rounded-lg hover:cursor-pointer transition-colors hover:bg-black `}
+    <NavLink
+      to={`/${path}?page=1`}
+      className={({ isActive }) =>
+        `${isActive ? "bg-black" : "bg-red-400"} 
+         text-white p-2 rounded-lg transition-colors hover:bg-black`
+      }
     >
-      {name}
-    </button>
+      {label}
+    </NavLink>
   );
 }

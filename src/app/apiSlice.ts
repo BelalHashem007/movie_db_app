@@ -20,6 +20,13 @@ interface FilteredResponse {
   total_pages: string
 }
 
+export type Category = "top_rated" | "popular" | "now_playing" | "upcoming"
+
+interface GetMovieListsArgument{
+  page:number | string
+  category: Category
+}
+
 const movieApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
@@ -36,9 +43,9 @@ const movieApi = createApi({
     getAuthentication: builder.query<object, void>({
       query: () => "authentication",
     }),
-    getPopularMovies: builder.query<FilteredResponse, string | number>({
-      query: (page) =>
-        `discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`,
+    getMovieLists: builder.query<FilteredResponse, GetMovieListsArgument>({
+      query: ({page,category}) =>
+        `movie/${category}?language=en-US&page=${page}`,
       transformResponse(res: ApiResponse) {
         const results: Movie[] = res.results.map((res) => ({
           id: res.id,
@@ -53,5 +60,5 @@ const movieApi = createApi({
   }),
 });
 
-export const { useGetAuthenticationQuery, useGetPopularMoviesQuery } = movieApi;
+export const { useGetAuthenticationQuery, useGetMovieListsQuery } = movieApi;
 export default movieApi;

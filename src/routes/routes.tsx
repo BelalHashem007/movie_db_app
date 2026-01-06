@@ -9,6 +9,10 @@ const routes = [
       {
         index:true,
         element:<Home/>
+      },
+      {
+        path:":category",
+        element:<Home/>
       }
     ]
   },
