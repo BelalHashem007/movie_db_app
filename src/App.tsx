@@ -4,6 +4,7 @@ import { initializeToken } from "./app/authSlice/authSlice.ts";
 import { useAppDispatch,useAppSelector } from "./app/hooks.ts";
 import { useEffect } from "react";
 import { useGetAuthenticationQuery } from "./app/apiSlice.ts";
+import Footer from "./components/Footer.tsx";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -18,9 +19,11 @@ function App() {
   return (
     <>
       <Header />
-      <main>
+      
+      <main className="">
         <Home />
       </main>
+      <Footer/>
     </>
   );
 }

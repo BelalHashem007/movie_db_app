@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: Oregano-font;
-  src: url("./assets//Oregano-Regular.ttf");
-}
+
 
 html {
-  font-family: Oregano-font, sans-serif;
+  font-family: "Arial", sans-serif;
 }

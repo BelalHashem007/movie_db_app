@@ -72,7 +72,7 @@ interface ButtonProps {
 function Button({ page, val, handlePagination }: ButtonProps) {
   const btnBase =
     "p-2 px-4 bg-gray-200 text-2xl hover:bg-gray-100 transition-colors hover:cursor-pointer disabled:cursor-default";
-  const btnActive = "bg-gray-100! border border-gray-400";
+  const btnActive = "bg-black! text-white ";
   return (
     <button
       type="button"
