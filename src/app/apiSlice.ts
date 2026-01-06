@@ -12,12 +12,12 @@ type MovieResponse = {
 
 interface ApiResponse {
   results: MovieResponse[];
-  page:number| string
+  total_pages:string
 }
 
 interface FilteredResponse {
   results: Movie[]
-  page:number | string
+  total_pages: string
 }
 
 const movieApi = createApi({
@@ -47,7 +47,7 @@ const movieApi = createApi({
           release_date: res.release_date,
           vote_average: res.vote_average,
         }));
-        return {page:res.page,results}
+        return {total_pages:res.total_pages,results}
       },
     }),
   }),

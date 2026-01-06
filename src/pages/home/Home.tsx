@@ -3,27 +3,29 @@ import { useGetPopularMoviesQuery } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import Movie from "../../components/Movie";
 import { useSearchParams } from "react-router";
+import Pagination from "../../components/Pagination";
 
 type FilterMovies = "Popular" | "Now Playing" | "Top Rated" | "Upcoming";
 
 export default function Home() {
   const [filterMovies, setFilterMovies] = useState<FilterMovies>("Popular");
   const token = useAppSelector((state) => state.auth.token);
-  const [searchParams,setSearchParams] = useSearchParams();
-  const page = searchParams.get("page") || '1'
-  const { data,isFetching,isLoading } = useGetPopularMoviesQuery(page, { skip: !token });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const { data, isFetching, isLoading } = useGetPopularMoviesQuery(page, {
+    skip: !token,
+  });
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [page]);
 
-  useEffect(()=>{
-    window.scrollTo({top:0,left:0,behavior:'instant'})
-  },[page])
+  if (isLoading) return <p className="text-3xl font-bold">Loading...</p>;
 
-  if(isLoading) return <p className="text-3xl font-bold">Loading...</p>
 
-  function handlePagination(page:number){
-    if(!isFetching){
-      setSearchParams(`?page=${page}`)
+  function handlePagination(page: number) {
+    if (!isFetching) {
+      setSearchParams(`?page=${page}`);
     }
-    
   }
 
   return (
@@ -44,22 +46,19 @@ export default function Home() {
           <Button name="Upcoming" filter={filterMovies} set={setFilterMovies} />
         </div>
       </section>
-        <section>
-          <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
-            {data?.results.map((movie) => (
-              <li key={movie.id}>
-                <Movie movie={movie} />
-              </li>
-            ))}
-          </ul>
-        </section>
+      <section>
+        <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
+          {data?.results.map((movie) => (
+            <li key={movie.id}>
+              <Movie movie={movie} />
+            </li>
+          ))}
+        </ul>
+      </section>
 
-        <section className="self-center">
-          <ul className="flex gap-3">
-            <li><button onClick={()=>handlePagination(1)} className="p-2 bg-gray-300 text-2xl w-10 h-13 hover:bg-gray-200 hover:cursor-pointer">1</button></li>
-            <li><button onClick={()=>handlePagination(2)} className="p-2 bg-gray-300 text-2xl w-10 h-13 hover:bg-gray-200 hover:cursor-pointer">2</button></li>
-          </ul>          
-        </section>
+      <section className="self-center">
+        <Pagination handlePagination={handlePagination} numPage={Number(page)}/>
+      </section>
     </div>
   );
 }
