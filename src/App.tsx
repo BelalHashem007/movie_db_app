@@ -17,14 +17,14 @@ function App() {
 
 
   return (
-    <>
+    <div className="dark:text-white dark:bg-black">
       <Header />
       
       <main className="">
         <Home />
       </main>
       <Footer/>
-    </>
+    </div>
   );
 }
 

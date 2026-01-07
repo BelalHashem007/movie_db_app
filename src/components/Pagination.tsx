@@ -19,7 +19,7 @@ export default function Pagination({
   }
 
   return (
-    <nav aria-label="Pagination">
+    <nav aria-label="Pagination" className="my-5">
       <ul className="flex gap-3">
         {/*Page number 1*/}
         <li>
@@ -56,9 +56,9 @@ export default function Pagination({
 function Ellipsis() {
   return (
     <div className="flex justify-center items-center gap-0.5">
-      <div className="w-1.25 h-1.25 bg-black rounded-[50%]"></div>
-      <div className="w-1.25 h-1.25 bg-black rounded-[50%]"></div>
-      <div className="w-1.25 h-1.25 bg-black rounded-[50%]"></div>
+      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
+      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
+      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
     </div>
   );
 }
@@ -71,14 +71,15 @@ interface ButtonProps {
 
 function Button({ page, val, handlePagination }: ButtonProps) {
   const btnBase =
-    "p-2 px-4 bg-gray-200 text-2xl hover:bg-gray-100 transition-colors hover:cursor-pointer disabled:cursor-default";
-  const btnActive = "bg-black! text-white ";
+    `px-3 py-2 rounded-lg border transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 
+    border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer`;
+  const btnActive = "bg-red-600 border-red-600 text-white disabled:pointer-events-none";
   return (
     <button
       type="button"
       disabled={page == val}
       onClick={() => handlePagination(val)}
-      className={`${btnBase} ${page == val && btnActive}`}
+      className={`${btnBase} ${page == val && btnActive} `}
     >
       {val}
     </button>
