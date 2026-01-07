@@ -2,7 +2,69 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  /* Default Light Mode Colors */
+  --card-bg: #ffffff;
+  --skeleton-base: #eeeeee;
+  --skeleton-shimmer: rgba(255, 255, 255, 0.6);
+  --border-color: #e0e0e0;
+}
+
+
+  :root.dark {
+    /* Dark Mode Colors */
+    --card-bg: #1e1e1e;
+    --skeleton-base: #333333;
+    --skeleton-shimmer: rgba(255, 255, 255, 0.05);
+    --border-color: #2d2d2d;
+  }
+
+
 html {
   font-family: "Arial", sans-serif;
 }
 
+.skeleton-card {
+  width: 300px;
+  height: 300px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+
+  background-image: 
+    /* 1. Shimmer Overlay */
+    linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent),
+    /* 2. Title line */
+    linear-gradient(var(--skeleton-base), var(--skeleton-base)),
+    /* 3. Date line */
+    linear-gradient(var(--skeleton-base), var(--skeleton-base)),
+    /* 4. Image box */
+    linear-gradient(var(--skeleton-base), var(--skeleton-base));
+  background-repeat: no-repeat;
+
+  /* SIZING: [Shimmer], [Title], [Date], [Image] */
+  background-size: 
+    200px 100%,  /* Shimmer */
+    150px 20px,   /* Title width/height */
+    80px 15px,    /* Date width/height */
+    100% 225px;   /* Image width/height */
+
+  /* POSITIONING: [Shimmer], [Title], [Date], [Image] */
+  background-position: 
+    -150% 0,      /* Shimmer (starts off-screen) */
+    20px 240px,   /* Title position */
+    20px 270px,   /* Date position */
+    0 0;          /* Image at top */
+
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    /* Move ONLY the first gradient (the shimmer) across the card */
+    background-position: 
+      250% 0, 
+      20px 240px, 
+      20px 270px, 
+      0 0;
+  }
+}

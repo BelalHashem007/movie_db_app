@@ -22,7 +22,7 @@ export default function Home() {
   const activeCategory: Category =
     (category && CATEGORY_MAP[category]) || "popular";
 
-  const { data, isFetching, isLoading } = useGetMovieListsQuery(
+  const { data, isLoading } = useGetMovieListsQuery(
     { page, category: activeCategory },
     {
       skip: !token,
@@ -40,12 +40,8 @@ export default function Home() {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [page]);
 
-  if (isLoading) return <p className="text-3xl font-bold">Loading...</p>;
-
   function handlePagination(page: number) {
-    if (!isFetching) {
-      setSearchParams(`?page=${page}`);
-    }
+    setSearchParams(`?page=${page}`);
   }
 
   return (
@@ -59,11 +55,15 @@ export default function Home() {
       </section>
       <section>
         <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
-          {data?.results.map((movie) => (
-            <li key={movie.id}>
-              <Movie movie={movie} />
-            </li>
-          ))}
+          {isLoading ? (
+            <LoadingMovie />
+          ) : (
+            data?.results.map((movie) => (
+              <li key={movie.id}>
+                <Movie movie={movie} />
+              </li>
+            ))
+          )}
         </ul>
       </section>
 
@@ -74,6 +74,25 @@ export default function Home() {
         />
       </section>
     </div>
+  );
+}
+
+function LoadingMovie() {
+  return (
+    <>
+    <li className="skeleton-card">
+    </li>
+    <li className="skeleton-card">
+    </li>
+    <li className="skeleton-card">
+    </li>
+    <li className="skeleton-card">
+    </li>
+    <li className="skeleton-card">
+    </li>
+    <li className="skeleton-card">
+    </li>
+    </>
   );
 }
 
