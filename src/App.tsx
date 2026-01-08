@@ -1,10 +1,10 @@
 import Header from "./components/Header";
-import Home from "./pages/home/Home";
 import { initializeToken } from "./app/authSlice/authSlice.ts";
 import { useAppDispatch,useAppSelector } from "./app/hooks.ts";
 import { useEffect } from "react";
 import { useGetAuthenticationQuery } from "./app/apiSlice.ts";
 import Footer from "./components/Footer.tsx";
+import { Outlet } from "react-router";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -17,14 +17,14 @@ function App() {
 
 
   return (
-    <div className="dark:text-white dark:bg-black">
+    <>
       <Header />
       
-      <main className="">
-        <Home />
+      <main className="grow">
+        <Outlet/>
       </main>
       <Footer/>
-    </div>
+      </>
   );
 }
 

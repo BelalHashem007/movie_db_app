@@ -30,7 +30,7 @@ export default function Pagination({
           />
         </li>
 
-        {start > 2 && <Ellipsis />}
+        {start > 2 && <li aria-hidden={true} className="flex items-center"><Ellipsis /></li>}
 
         {/*Pages 2 before, 2 after and current = 5 btns*/}
         {paginationButtons.map((val) => (
@@ -38,7 +38,7 @@ export default function Pagination({
             <Button page={numPage} val={val} handlePagination={handlePagination}/>
           </li>
         ))}
-        {end < total - 1 && <Ellipsis />}
+        {end < total - 1 && <li aria-hidden={true} className="flex items-center"><Ellipsis /></li>}
 
         {/*Page number total= 500*/}
         <li>
@@ -55,11 +55,11 @@ export default function Pagination({
 
 function Ellipsis() {
   return (
-    <div className="flex justify-center items-center gap-0.5">
-      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
-      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
-      <div className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></div>
-    </div>
+    <span className="flex justify-center items-center gap-0.5">
+      <span className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></span>
+      <span className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></span>
+      <span className="w-1.25 h-1.25 dark:bg-gray-600 bg-gray-400  rounded-[50%]"></span>
+    </span>
   );
 }
 

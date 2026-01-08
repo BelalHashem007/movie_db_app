@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { Link } from "react-router";
 
 export interface Movie {
   id: string;
@@ -16,18 +17,18 @@ export default function Movie({ movie }: { movie: Movie }) {
 
   return (
     <div>
-      <a href="" className="aspect-2/3 block">
+      <Link  to={`/movie/${movie.id}`} className="aspect-2/3 block">
         <img
           src={imgSrc}
           loading="lazy"
           alt={`Movie poster of ${movie.title}`}
           className="object-contain w-full h-full"
         />
-      </a>
+      </Link>
       <div className="relative">
-        <a href="" title={movie.title}>
+        <Link to={`/movie/${movie.id}`} title={movie.title}>
           <h3 className="font-bold text-2xl">{movie.title}</h3>
-        </a>
+        </Link>
         <div
           aria-label="Movie Rating"
           className="w-8.75 absolute top-0 left-1 rounded-[50%] bg-emerald-600 text-white border p-1 -translate-y-10 text-center"

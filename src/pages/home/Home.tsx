@@ -47,11 +47,19 @@ export default function Home() {
   return (
     <div className="mx-2.5 my-5 flex gap-5 flex-col min-[500px]:mx-5 ">
       <section>
-        <div className="flex gap-2.5">
-          {buttons.map((btn) => (
-            <CategoryButton key={btn.path} label={btn.label} path={btn.path} />
-          ))}
-        </div>
+        <nav aria-label="Movie Category">
+          <ul className="flex gap-2.5">
+            {buttons.map((btn) => (
+              <li>
+                <CategoryButton
+                  key={btn.path}
+                  label={btn.label}
+                  path={btn.path}
+                />
+              </li>
+            ))}
+          </ul>
+        </nav>
       </section>
       <section>
         <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
@@ -80,18 +88,12 @@ export default function Home() {
 function LoadingMovie() {
   return (
     <>
-    <li className="skeleton-card">
-    </li>
-    <li className="skeleton-card">
-    </li>
-    <li className="skeleton-card">
-    </li>
-    <li className="skeleton-card">
-    </li>
-    <li className="skeleton-card">
-    </li>
-    <li className="skeleton-card">
-    </li>
+      <li className="skeleton-card"></li>
+      <li className="skeleton-card"></li>
+      <li className="skeleton-card"></li>
+      <li className="skeleton-card"></li>
+      <li className="skeleton-card"></li>
+      <li className="skeleton-card"></li>
     </>
   );
 }
@@ -101,7 +103,7 @@ function CategoryButton({ label, path }: { label: string; path: string }) {
     <NavLink
       to={`/${path}?page=1`}
       className={({ isActive }) =>
-        `${isActive ? "bg-black dark:bg-gray-700" : "bg-red-400"} 
+        `${isActive ? "bg-black dark:bg-gray-700" : "bg-red-600"} 
          text-white p-2 rounded-lg transition-colors hover:bg-black dark:hover:bg-gray-700`
       }
     >

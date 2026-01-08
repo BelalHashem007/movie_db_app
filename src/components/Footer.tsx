@@ -36,7 +36,7 @@ export default function Footer() {
   const paragaphsStyle = "dark:text-white text-gray-900 mb-2.5";
 
   return (
-    <footer className=" bg-gray-50 border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+    <footer className=" bg-gray-50 border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800 w-full shrink-0">
       <div className="grid grid-cols-[300px_1fr] gap-20 p-10">
         <div>
           <div className="flex font-bold text-xl items-center dark:text-white text-gray-900 ">
@@ -68,7 +68,7 @@ export default function Footer() {
             </a>
           </div>
           <div>
-            <p className={paragaphsStyle}>Light/Dark</p>
+            <label htmlFor="theme" className={`${paragaphsStyle} block`}>Light/Dark</label>
             <select
               name="theme"
               id="theme"
