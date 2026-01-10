@@ -27,6 +27,15 @@ interface GetMovieListsArgument{
   category: Category
 }
 
+type Genre = {id:number, name:string}
+
+interface MovieById extends MovieResponse {
+  budget:number
+  genres:Genre[]
+  overview:string
+  runtime:number
+}
+
 const movieApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
@@ -57,8 +66,11 @@ const movieApi = createApi({
         return {total_pages:res.total_pages,results}
       },
     }),
+    getMovieById: builder.query<MovieById,string|number>({
+      query: (id) => `movie/${id}?append_to_response=credits,reviews`,
+    })
   }),
 });
 
-export const { useGetAuthenticationQuery, useGetMovieListsQuery } = movieApi;
+export const { useGetAuthenticationQuery, useGetMovieListsQuery,useGetMovieByIdQuery } = movieApi;
 export default movieApi;

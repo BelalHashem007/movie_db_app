@@ -45,12 +45,12 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-2.5 my-5 flex gap-5 flex-col min-[500px]:mx-5 ">
-      <section>
+    <div className=" my-5 flex gap-5 flex-col min-[500px]:px-5 container mx-auto px-2.5 justify-center">
+      <section className="mx-auto">
         <nav aria-label="Movie Category">
           <ul className="flex gap-2.5">
             {buttons.map((btn) => (
-              <li>
+              <li key={btn.label}>
                 <CategoryButton
                   key={btn.path}
                   label={btn.label}
@@ -62,7 +62,7 @@ export default function Home() {
         </nav>
       </section>
       <section>
-        <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,350px))] justify-center">
+        <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(150px,350px))] justify-center">
           {isLoading ? (
             <LoadingMovie />
           ) : (

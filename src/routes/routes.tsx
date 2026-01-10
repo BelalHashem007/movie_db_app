@@ -1,5 +1,6 @@
 import App from "../App";
 import Home from "../pages/home/Home";
+import MovieDetails from "../pages/movie/MovieDetails";
 
 const routes = [
   {
@@ -13,6 +14,9 @@ const routes = [
       {
         path:":category",
         element:<Home/>
+      },{
+        path:"movie/:movieid",
+        element:<MovieDetails/>
       }
     ]
   },

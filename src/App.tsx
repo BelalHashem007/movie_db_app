@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useGetAuthenticationQuery } from "./app/apiSlice.ts";
 import Footer from "./components/Footer.tsx";
 import { Outlet } from "react-router";
+import ScrollToTop from "./components/ScrollToTop.tsx";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <>
+    <ScrollToTop/>
       <Header />
       
       <main className="grow">
