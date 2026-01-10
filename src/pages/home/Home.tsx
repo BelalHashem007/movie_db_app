@@ -6,6 +6,7 @@ import { useSearchParams, useParams, NavLink } from "react-router";
 import Pagination from "../../components/Pagination";
 import type { Category } from "../../app/apiSlice";
 
+
 const CATEGORY_MAP: Record<string, Category> = {
   popular: "popular",
   "now-playing": "now_playing",

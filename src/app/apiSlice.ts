@@ -29,11 +29,16 @@ interface GetMovieListsArgument{
 
 type Genre = {id:number, name:string}
 
-interface MovieById extends MovieResponse {
+type Cast = {id:number,profile_path:string,name:string,character:string}
+
+export type Credits = {cast:Cast[]}
+
+export interface MovieById extends MovieResponse {
   budget:number
   genres:Genre[]
   overview:string
   runtime:number
+  credits:Credits
 }
 
 const movieApi = createApi({

@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { Link } from "react-router";
+import ImageWithFallback from "./ImgWithFallback";
 
 export interface Movie {
   id: string;
@@ -18,12 +19,7 @@ export default function Movie({ movie }: { movie: Movie }) {
   return (
     <div>
       <Link  to={`/movie/${movie.id}`} className="aspect-2/3 block">
-        <img
-          src={imgSrc}
-          loading="lazy"
-          alt={`Movie poster of ${movie.title}`}
-          className="object-contain w-full h-full"
-        />
+        <ImageWithFallback src={imgSrc} alt={`Movie poster of ${movie.title}`} className="object-contain w-full h-full"/>
       </Link>
       <div className="relative">
         <Link to={`/movie/${movie.id}`} title={movie.title}>
