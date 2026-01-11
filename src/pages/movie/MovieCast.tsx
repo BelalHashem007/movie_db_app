@@ -18,7 +18,7 @@ export default function MovieCast({credits}:{credits:Credits}) {
             className={`rounded-lg border overflow-hidden dark:bg-gray-800 dark:border-gray-700 bg-white border-gray-200`}
           >
             <div className="aspect-3/4 overflow-hidden">
-              <ImageWithFallback src={url + actor.profile_path} alt={actor.name} className="w-full h-full object-cover"/>
+              <ImageWithFallback src={url + actor.profile_path} alt={actor.name} className="w-full h-full object-fill"/>
             </div>
             <div className="p-3">
               <p

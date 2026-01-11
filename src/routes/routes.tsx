@@ -1,6 +1,6 @@
 import App from "../App";
 import Home from "../pages/home/Home";
-import MovieDetails from "../pages/movie/MovieDetails";
+import MovieDetails from "../pages/movie/MovieDetailsPage";
 
 const routes = [
   {

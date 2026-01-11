@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice/authSlice";
 import movieApi from "./apiSlice";
+import imageSlice from "./imageSlice/imageSlice";
 
 const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     [movieApi.reducerPath]: movieApi.reducer,
+    img:imageSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(movieApi.middleware),

@@ -5,6 +5,7 @@ import Icon from "@mdi/react";
 import { mdiArrowLeft } from "@mdi/js";
 import MovieInfo from "./MovieInfo";
 import MovieCast from "./MovieCast";
+import MovieGallery from "./MovieGallery";
 
 export default function MovieDetails() {
   const token = useAppSelector((state) => state.auth.token);
@@ -38,6 +39,9 @@ export default function MovieDetails() {
       </button>
       <MovieInfo movieData={movieData} />
       <MovieCast credits={movieData.credits} />
+      {movieData.images.backdrops.length > 0 && (
+        <MovieGallery images={movieData.images} title={movieData.title} />
+      )}
     </div>
   );
 }

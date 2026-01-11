@@ -33,12 +33,21 @@ type Cast = {id:number,profile_path:string,name:string,character:string}
 
 export type Credits = {cast:Cast[]}
 
+type Backdrop = {
+  file_path:string
+}
+
+export type Images = {
+  backdrops: Backdrop[]
+}
+
 export interface MovieById extends MovieResponse {
   budget:number
   genres:Genre[]
   overview:string
   runtime:number
   credits:Credits
+  images: Images
 }
 
 const movieApi = createApi({
@@ -72,7 +81,7 @@ const movieApi = createApi({
       },
     }),
     getMovieById: builder.query<MovieById,string|number>({
-      query: (id) => `movie/${id}?append_to_response=credits,reviews`,
+      query: (id) => `movie/${id}?append_to_response=credits,images&language=en-US&include_image_language=en-US,null`,
     })
   }),
 });
