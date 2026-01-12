@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "./store";
 import type { Movie } from "../components/Movie";
+import { isApiResponse } from "../utility/helperFunctions";
 
 type MovieResponse = {
   title: string;
@@ -10,7 +11,7 @@ type MovieResponse = {
   id: string;
 };
 
-interface ApiResponse {
+export interface ApiResponse {
   results: MovieResponse[];
   total_pages:string
 }
@@ -69,7 +70,10 @@ const movieApi = createApi({
     getMovieLists: builder.query<FilteredResponse, GetMovieListsArgument>({
       query: ({page,category}) =>
         `movie/${category}?language=en-US&page=${page}`,
-      transformResponse(res: ApiResponse) {
+      transformResponse(res: unknown) {
+        if (!isApiResponse(res)){
+          throw new Error("Invalid API Response")
+        }
         const results: Movie[] = res.results.map((res) => ({
           id: res.id,
           title: res.title,
