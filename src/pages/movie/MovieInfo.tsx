@@ -7,16 +7,19 @@ import {
   mdiCurrencyUsd,
 } from "@mdi/js";
 import ImageWithFallback from "../../components/ImgWithFallback";
+import { getDuration } from "../../utility/helperFunctions";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
-  const poster = "https://image.tmdb.org/t/p/w780" + movieData.poster_path;
-  const duration = movieData.runtime
+
+  const poster:string = "https://image.tmdb.org/t/p/w780" + movieData.poster_path;
+  const duration:string = movieData.runtime
     ? getDuration(movieData.runtime)
     : "Unknown";
-  const budget = new Intl.NumberFormat("en-US", {
+  const budget:string = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(movieData.budget);
+
   return (
     <section
       className={`rounded-lg border p-6 mb-8  bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700`}
@@ -110,9 +113,3 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   );
 }
 
-function getDuration(runtime: number) {
-  const hours = Math.floor(runtime / 60);
-  const minutes = runtime % 60;
-
-  return `${hours}h ${minutes}m`;
-}

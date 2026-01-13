@@ -1,6 +1,7 @@
 import type { Images } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import { useState } from "react";
+import { type Backdrop } from "../../app/apiSlice";
 
 export default function MovieGallery({
   images,
@@ -9,11 +10,11 @@ export default function MovieGallery({
   images: Images;
   title: string;
 }) {
-  const [curImg, setCurImg] = useState(0);
+  const [curImg, setCurImg] = useState<number>(0);
   const baseURL = useAppSelector((state) => state.img.url);
-  const currentImages = images.backdrops.slice(0, 10);
+  const currentImages:Backdrop[] = images.backdrops.slice(0, 10);
 
-  function handleCarousels(num: number) {
+  function handleCarousels(num: number):void {
     if (num == 1) {
       const newCurImg = curImg == currentImages.length - 1 ? 0 : curImg + 1;
       setCurImg(newCurImg);
@@ -23,13 +24,13 @@ export default function MovieGallery({
     }
   }
 
-  function handleSmallImgClick(index: number) {
+  function handleSmallImgClick(index: number):void {
     setCurImg(index);
   }
 
   return (
     <section className="mb-8">
-      <h2 className={`text-3xl mb-6 dark:text-white text-gray-900`}>Gallery</h2>
+      <h2>Gallery</h2>
       <div className="max-w-7xl mx-auto">
         <div className="relative">
           {/*Back and Forward buttons*/}

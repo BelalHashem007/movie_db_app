@@ -7,7 +7,6 @@ export default function MovieCast({credits}:{credits:Credits}) {
   return (
     <section className="mb-8">
       <h2
-        className={`text-3xl mb-6 dark:text-white text-gray-900`}
       >
         Cast
       </h2>

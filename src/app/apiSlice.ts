@@ -39,7 +39,7 @@ type Cast = {
 
 export type Credits = { cast: Cast[] };
 
-type Backdrop = {
+export type Backdrop = {
   file_path: string;
 };
 
@@ -56,7 +56,7 @@ export interface MovieById extends MovieResponse {
   images: Images;
 }
 
-type Review = {
+export type Review = {
   author: string;
   author_details: {
     name: string;
@@ -66,6 +66,7 @@ type Review = {
   },
   content:string
   created_at:string
+  id:string
 };
 
 type MovieReviews = {
@@ -87,9 +88,6 @@ const movieApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getAuthentication: builder.query<object, void>({
-      query: () => "authentication",
-    }),
     getMovieLists: builder.query<FilteredResponse, GetMovieListsArgument>({
       query: ({ page, category }) =>
         `movie/${category}?language=en-US&page=${page}`,
@@ -118,7 +116,6 @@ const movieApi = createApi({
 });
 
 export const {
-  useGetAuthenticationQuery,
   useGetMovieListsQuery,
   useGetMovieByIdQuery,
   useGetMovieReviewsByIdQuery

@@ -11,7 +11,6 @@ export interface Movie {
 }
 
 export default function Movie({ movie }: { movie: Movie }) {
-  console.log(movie)
   const imgSrc = "https://image.tmdb.org/t/p/w342" + movie.img_url;
   const vote = Number(movie.vote_average).toFixed(1);
   const dateFormatted = movie.release_date ? format(movie.release_date, "MMM dd yyyy") : 'Unknown';

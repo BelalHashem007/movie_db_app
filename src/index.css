@@ -26,6 +26,11 @@ html {
 button:hover {
   cursor: pointer; 
 }
+@layer base {
+  h2 {
+    @apply text-3xl mb-6 dark:text-white text-gray-900
+  }
+}
 
 
 /*other stuff*/
