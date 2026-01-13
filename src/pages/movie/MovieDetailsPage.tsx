@@ -6,22 +6,25 @@ import { mdiArrowLeft } from "@mdi/js";
 import MovieInfo from "./MovieInfo";
 import MovieCast from "./MovieCast";
 import MovieGallery from "./MovieGallery";
+import MovieReviews from "./MovieReviews";
 
 export default function MovieDetails() {
   const token = useAppSelector((state) => state.auth.token);
-  const { movieid } = useParams();
+  const params = useParams();
+  const movieid = params.movieid as string
   const location = useLocation();
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
-  const { data: movieData } = useGetMovieByIdQuery(movieid as string, {
+
+  const { data: movieData } = useGetMovieByIdQuery(movieid, {
     skip: !token,
   });
 
   function handleBack() {
     if (location.key !== "default") {
-      naviagte(-1);
+      navigate(-1);
     } else {
-      naviagte("/");
+      navigate("/");
     }
   }
   if (!movieData) return;
@@ -42,6 +45,7 @@ export default function MovieDetails() {
       {movieData.images.backdrops.length > 0 && (
         <MovieGallery images={movieData.images} title={movieData.title} />
       )}
+      <MovieReviews id={movieid} />
     </div>
   );
 }

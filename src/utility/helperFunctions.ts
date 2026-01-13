@@ -12,4 +12,13 @@ function isApiResponse(data: unknown): data is ApiResponse {
   return false;
 }
 
-export {isApiResponse}
+function getDateFromIso(timestamp: string) {
+  const dateObj = new Date(timestamp);
+  return dateObj.toLocaleDateString(undefined,{
+    year:"numeric",
+    month:"long",
+    day:"numeric"
+  });
+}
+
+export { isApiResponse, getDateFromIso };

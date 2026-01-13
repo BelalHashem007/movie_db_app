@@ -1,7 +1,5 @@
 import type { Images } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
-import Icon from "@mdi/react";
-import { mdiArrowLeftDropCircle, mdiArrowRightDropCircle } from "@mdi/js";
 import { useState } from "react";
 
 export default function MovieGallery({
@@ -24,36 +22,38 @@ export default function MovieGallery({
       setCurImg(newCurImg);
     }
   }
-  
-  function handleSmallImgClick(index:number){
-    setCurImg(index)
+
+  function handleSmallImgClick(index: number) {
+    setCurImg(index);
   }
 
   return (
     <section className="mb-8">
       <h2 className={`text-3xl mb-6 dark:text-white text-gray-900`}>Gallery</h2>
-      <div className="relative max-w-7xl mx-auto">
-        <div>
+      <div className="max-w-7xl mx-auto">
+        <div className="relative">
           {/*Back and Forward buttons*/}
           <button
-            className="absolute top-[50%] z-1"
+            className="absolute top-1/2 -translate-y-1/2 z-10 group"
             onClick={() => handleCarousels(-1)}
           >
-            <Icon
-              path={mdiArrowLeftDropCircle}
-              size={2}
-              className="text-black fill-white dark:text-white dark:fill-black  -translate-x-12"
-            />
+            <div className="flex flex-col items-center justify-center p-4">
+              {/* Upper wing */}
+              <div className="w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors"></div>
+              {/* Lower wing */}
+              <div className="w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-3.75 "></div>
+            </div>
           </button>
           <button
-            className="absolute top-[50%] translate-x-12 z-1 right-0"
+            className="absolute top-1/2 -translate-y-1/2 z-10 group right-0"
             onClick={() => handleCarousels(1)}
           >
-            <Icon
-              path={mdiArrowRightDropCircle}
-              size={2}
-              className="text-black fill-white dark:text-white dark:fill-black"
-            />
+           <div className="flex flex-col items-center justify-center p-4 rotate-180">
+              {/* Upper wing */}
+              <div className="w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors "></div>
+              {/* Lower wing */}
+              <div className="w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-3.75"></div>
+            </div>
           </button>
           {/*Current shown image*/}
           <div className={`rounded-lg overflow-hidden aspect-video`}>
@@ -67,12 +67,20 @@ export default function MovieGallery({
         </div>
         {/*button images*/}
         <div className="flex flex-nowrap justify-center items-center gap-1 overflow-x-auto mt-2">
-          {currentImages.map((img,index) => (
-            <button onClick={()=>handleSmallImgClick(index)} className="shrink-0">
+          {currentImages.map((img, index) => (
+            <button
+              key={index}
+              onClick={() => handleSmallImgClick(index)}
+              className="shrink-0"
+            >
               <img
                 src={baseURL + "w300" + img.file_path}
                 alt={`Gallery image ${title}`}
-                className={`w-25 h-full object-fill ${curImg == index ? "border-2 border-red-400 dark:border-red-600":""}`}
+                className={`w-25 h-full object-fill ${
+                  curImg == index
+                    ? "border-2 border-red-400 dark:border-red-600"
+                    : ""
+                }`}
                 loading="lazy"
               />
             </button>
