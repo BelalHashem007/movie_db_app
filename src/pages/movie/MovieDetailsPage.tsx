@@ -3,12 +3,13 @@ import { useGetMovieByIdQuery } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import Icon from "@mdi/react";
 import { mdiArrowLeft } from "@mdi/js";
-import MovieInfo from "./MovieInfo";
-import MovieCast from "./MovieCast";
-import MovieGallery from "./MovieGallery";
+import MovieInfo from "./components/MovieInfo";
+import MovieCast from "./components/MovieCast";
+import MovieGallery from "./components/MovieGallery";
 import { lazy, useEffect, useRef, useState } from "react";
+import MovieDetailsSkeleton from "./components/MovieDetailsSkeleton";
 
-const MovieReviews = lazy(() => import("./MovieReviews"));
+const MovieReviews = lazy(() => import("./components/MovieReviews"));
 
 export default function MovieDetails() {
   const [showReviews, setShowReviews] = useState<boolean>(false);
@@ -20,18 +21,18 @@ export default function MovieDetails() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { data: movieData } = useGetMovieByIdQuery(movieid, {
+  const { data: movieData, isLoading } = useGetMovieByIdQuery(movieid, {
     skip: !token,
   });
 
   useEffect(() => {
-    if (!movieData || showReviews) return;
+    if (!movieData || showReviews ) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].intersectionRatio <= 0) return;
         setShowReviews(true);
       },
-      { rootMargin: "200px" }
+      { rootMargin: "400px" }
     );
 
     observer.observe(movieReviewsPlaceholderRef.current as HTMLDivElement);
@@ -46,7 +47,6 @@ export default function MovieDetails() {
       navigate("/");
     }
   }
-  if (!movieData) return;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -58,13 +58,22 @@ export default function MovieDetails() {
         <Icon path={mdiArrowLeft} size={1} />
         Back to Movies
       </button>
-      <MovieInfo movieData={movieData} />
-      <MovieCast credits={movieData.credits} />
-      {movieData.images.backdrops.length > 0 && (
-        <MovieGallery images={movieData.images} title={movieData.title} />
+      {isLoading || !movieData ? (
+        <MovieDetailsSkeleton />
+      ) : (
+        <div className="">
+          <MovieInfo movieData={movieData} />
+          <MovieCast credits={movieData.credits} />
+          {movieData.images.backdrops.length > 0 && (
+            <MovieGallery images={movieData.images} title={movieData.title} />
+          )}
+          <div
+            id="MovieReviewsPlaceHolder"
+            ref={movieReviewsPlaceholderRef}
+          ></div>
+          {showReviews && <MovieReviews id={movieid} />}
+        </div>
       )}
-      <div id="MovieReviewsPlaceHolder" ref={movieReviewsPlaceholderRef}></div>
-      {showReviews && <MovieReviews id={movieid} />}
     </div>
   );
 }

@@ -22,6 +22,10 @@
 /* some common styles*/
 html {
   font-family: "Arial", sans-serif;
+  line-height: 1.5;
+}
+html *{
+  line-height: inherit;
 }
 button:hover {
   cursor: pointer; 

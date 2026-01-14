@@ -1,7 +1,7 @@
-import type { Images } from "../../app/apiSlice";
-import { useAppSelector } from "../../app/hooks";
+import type { Images } from "../../../app/apiSlice";
+import { useAppSelector } from "../../../app/hooks";
 import { useState } from "react";
-import { type Backdrop } from "../../app/apiSlice";
+import { type Backdrop } from "../../../app/apiSlice";
 
 export default function MovieGallery({
   images,

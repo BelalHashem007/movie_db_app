@@ -1,5 +1,5 @@
-import type { Credits } from "../../app/apiSlice";
-import ImageWithFallback from "../../components/ImgWithFallback";
+import type { Credits } from "../../../app/apiSlice";
+import ImageWithFallback from "../../../components/ImgWithFallback";
 
 export default function MovieCast({credits}:{credits:Credits}) {
     const url = "https://image.tmdb.org/t/p/w185"

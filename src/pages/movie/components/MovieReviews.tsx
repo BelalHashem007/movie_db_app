@@ -1,16 +1,15 @@
-import { useGetMovieReviewsByIdQuery, type Review } from "../../app/apiSlice";
+import { useGetMovieReviewsByIdQuery, type Review } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiStar } from "@mdi/js";
-import { getDateFromIso } from "../../utility/helperFunctions";
-import { useState } from "react";
+import { getDateFromIso } from "../../../utility/helperFunctions";
+import { useState,useRef, useEffect } from "react";
+
 
 export default function MovieReviews({ id }: { id: string | number }) {
   const { data } = useGetMovieReviewsByIdQuery(id);
-  console.log(data);
   if (!data || data.results.length == 0) {
     return <></>;
   }
-
   const reviews: Review[] = data.results.slice(0, 5);
   return (
     <section className="flex flex-col gap-5 mb-8">
@@ -26,6 +25,17 @@ export default function MovieReviews({ id }: { id: string | number }) {
 
 function Review({ review }: { review: Review }) {
   const [showMore, setShowMore] = useState<boolean>(false);
+  const [totalLine,setTotalLines] = useState<number>(0);
+  const contentRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(()=>{
+    if (contentRef.current){
+      const totalHeight = contentRef.current.scrollHeight;
+      console.log("Total line: "+ totalHeight/24)
+      setTotalLines(totalHeight/(1.5*16))
+    }
+  },[])
+
   return (
     <article className="dark:bg-gray-800 dark:border-gray-700 bg-white border-gray-200 rounded-lg p-4 relative">
       <div className="flex gap-4 items-center">
@@ -44,23 +54,24 @@ function Review({ review }: { review: Review }) {
         </div>
       </div>
       <p
-        className={`dark:text-gray-300 text-gray-700 ${
+        className={`dark:text-gray-300 text-gray-700 leading-[1.3] ${
           showMore ? "" : "line-clamp-2"
         } `}
+        ref = {contentRef}
       >
         {review.content}
       </p>
       <div className="absolute top-4 right-4 dark:text-gray-400 text-gray-600 ">
         {getDateFromIso(review.created_at)}
       </div>
-      <button
+      {totalLine > 2 && <button
         className="text-blue-400 mt-2"
         onClick={() => {
           setShowMore(!showMore);
         }}
       >
         {showMore ? "Show Less" : "Show More"}
-      </button>
+      </button>}
     </article>
   );
 }

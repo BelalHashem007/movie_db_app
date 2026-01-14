@@ -1,4 +1,4 @@
-import type { MovieById } from "../../app/apiSlice";
+import type { MovieById } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import {
   mdiStar,
@@ -6,8 +6,8 @@ import {
   mdiClockOutline,
   mdiCurrencyUsd,
 } from "@mdi/js";
-import ImageWithFallback from "../../components/ImgWithFallback";
-import { getDuration } from "../../utility/helperFunctions";
+import ImageWithFallback from "../../../components/ImgWithFallback";
+import { getDuration } from "../../../utility/helperFunctions";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
 

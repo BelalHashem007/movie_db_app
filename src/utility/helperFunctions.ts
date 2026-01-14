@@ -28,5 +28,14 @@ function getDuration(runtime: number):string {
   return `${hours}h ${minutes}m`;
 }
 
+const isDev = import.meta.env.VITE_DEVELOPMENT === "development"
 
-export { isApiResponse, getDateFromIso,getDuration };
+const logger = {
+  warn:(arg: string)=> isDev && console.warn("[WARN]: ",arg),
+  info:(arg: string)=> isDev && console.info("[INFO]: ",arg),
+  error:(err:string)=> isDev && console.error("[INFO]: ",err),
+  
+}
+
+
+export { isApiResponse, getDateFromIso,getDuration,logger };

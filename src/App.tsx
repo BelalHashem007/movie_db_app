@@ -13,17 +13,16 @@ function App() {
     dispatch(initializeToken());
   }, [dispatch]);
 
-
   return (
     <>
-    <ScrollToTop/>
-      <Header />
-      
-      <main className="grow">
-        <Outlet/>
-      </main>
-      <Footer/>
-      </>
+        <ScrollToTop/>
+          <Header />
+
+          <main className="grow">
+            <Outlet />
+          </main>
+          <Footer />
+    </>
   );
 }
 
