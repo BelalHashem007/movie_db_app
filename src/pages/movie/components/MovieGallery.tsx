@@ -1,7 +1,8 @@
 import type { Images } from "../../../app/apiSlice";
 import { useAppSelector } from "../../../app/hooks";
-import { useState } from "react";
+import { useEffect, useState,useMemo } from "react";
 import { type Backdrop } from "../../../app/apiSlice";
+import ImageWithFallback from "../../../components/ImgWithFallback";
 
 export default function MovieGallery({
   images,
@@ -12,9 +13,23 @@ export default function MovieGallery({
 }) {
   const [curImg, setCurImg] = useState<number>(0);
   const baseURL = useAppSelector((state) => state.img.url);
-  const currentImages:Backdrop[] = images.backdrops.slice(0, 10);
+  const currentImages: Backdrop[] = useMemo(()=>images.backdrops.slice(0, 10),[images]);
 
-  function handleCarousels(num: number):void {
+  useEffect(()=>{
+    currentImages.forEach((img,index )=> {
+      if (index > 0){
+        const link = document.createElement('link');
+        link.href = baseURL + "w1280" + img.file_path;
+        link.rel="prefetch";
+        link.as = "image";
+        document.head.appendChild(link);
+      }
+      
+    });
+  },[baseURL,currentImages])
+
+  /*Handlers*/
+  function handleCarousels(num: number): void {
     if (num == 1) {
       const newCurImg = curImg == currentImages.length - 1 ? 0 : curImg + 1;
       setCurImg(newCurImg);
@@ -24,7 +39,7 @@ export default function MovieGallery({
     }
   }
 
-  function handleSmallImgClick(index: number):void {
+  function handleSmallImgClick(index: number): void {
     setCurImg(index);
   }
 
@@ -49,7 +64,7 @@ export default function MovieGallery({
             className="absolute top-1/2 -translate-y-1/2 z-10 group right-0"
             onClick={() => handleCarousels(1)}
           >
-           <div className="flex flex-col items-center justify-center p-4 rotate-180">
+            <div className="flex flex-col items-center justify-center p-4 rotate-180">
               {/* Upper wing */}
               <div className="w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors "></div>
               {/* Lower wing */}
@@ -58,11 +73,10 @@ export default function MovieGallery({
           </button>
           {/*Current shown image*/}
           <div className={`rounded-lg overflow-hidden aspect-video`}>
-            <img
+            <ImageWithFallback
               src={baseURL + "w1280" + currentImages[curImg].file_path}
               alt={`Gallery image ${title}`}
               className="w-full h-full object-fill"
-              loading="lazy"
             />
           </div>
         </div>
@@ -74,7 +88,7 @@ export default function MovieGallery({
               onClick={() => handleSmallImgClick(index)}
               className="shrink-0"
             >
-              <img
+              <ImageWithFallback
                 src={baseURL + "w300" + img.file_path}
                 alt={`Gallery image ${title}`}
                 className={`w-25 h-full object-fill ${
@@ -82,7 +96,6 @@ export default function MovieGallery({
                     ? "border-2 border-red-400 dark:border-red-600"
                     : ""
                 }`}
-                loading="lazy"
               />
             </button>
           ))}

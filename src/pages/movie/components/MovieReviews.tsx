@@ -10,6 +10,7 @@ export default function MovieReviews({ id }: { id: string | number }) {
   if (!data || data.results.length == 0) {
     return <></>;
   }
+
   const reviews: Review[] = data.results.slice(0, 5);
   return (
     <section className="flex flex-col gap-5 mb-8">
@@ -31,7 +32,6 @@ function Review({ review }: { review: Review }) {
   useEffect(()=>{
     if (contentRef.current){
       const totalHeight = contentRef.current.scrollHeight;
-      console.log("Total line: "+ totalHeight/24)
       setTotalLines(totalHeight/(1.5*16))
     }
   },[])
