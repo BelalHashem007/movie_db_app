@@ -15,11 +15,11 @@ export default function MovieReviews({ id }: { id: string | number }) {
   return (
     <section className="flex flex-col gap-5 mb-8">
       <h2>Reviews</h2>
-      <div className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-4">
         {reviews.map((review) => (
-          <Review key={review.id} review={review} />
+          <li key={review.id}><Review key={review.id} review={review} /></li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

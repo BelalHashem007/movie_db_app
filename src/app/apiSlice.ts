@@ -112,12 +112,30 @@ const movieApi = createApi({
     getMovieReviewsById: builder.query<MovieReviews,string|number>({
       query: (id)=> `movie/${id}/reviews?language=en-US&page=1`
     }),
+    getMovieRecommendation: builder.query<FilteredResponse,number|string>({
+      query: (id)=> `movie/${id}/recommendations?language=en-US&page=1`,
+      transformResponse(res: unknown) {
+        if (!isApiResponse(res)) {
+          throw new Error("Invalid API Response");
+        }
+        const results: Movie[] = res.results.map((res) => ({
+          id: res.id,
+          title: res.title,
+          img_url: res.poster_path,
+          release_date: res.release_date,
+          vote_average: res.vote_average,
+        }));
+        return { total_pages: res.total_pages, results };
+      },
+    })
+    
   }),
 });
 
 export const {
   useGetMovieListsQuery,
   useGetMovieByIdQuery,
-  useGetMovieReviewsByIdQuery
+  useGetMovieReviewsByIdQuery,
+  useGetMovieRecommendationQuery
 } = movieApi;
 export default movieApi;

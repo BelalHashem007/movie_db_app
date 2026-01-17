@@ -1,6 +1,6 @@
 import type { Images } from "../../../app/apiSlice";
 import { useAppSelector } from "../../../app/hooks";
-import { useEffect, useState,useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { type Backdrop } from "../../../app/apiSlice";
 import ImageWithFallback from "../../../components/ImgWithFallback";
 
@@ -13,20 +13,22 @@ export default function MovieGallery({
 }) {
   const [curImg, setCurImg] = useState<number>(0);
   const baseURL = useAppSelector((state) => state.img.url);
-  const currentImages: Backdrop[] = useMemo(()=>images.backdrops.slice(0, 10),[images]);
+  const currentImages: Backdrop[] = useMemo(
+    () => images.backdrops.slice(0, 10),
+    [images],
+  );
 
-  useEffect(()=>{
-    currentImages.forEach((img,index )=> {
-      if (index > 0){
-        const link = document.createElement('link');
+  useEffect(() => {
+    currentImages.forEach((img, index) => {
+      if (index > 0) {
+        const link = document.createElement("link");
         link.href = baseURL + "w1280" + img.file_path;
-        link.rel="prefetch";
+        link.rel = "prefetch";
         link.as = "image";
         document.head.appendChild(link);
       }
-      
     });
-  },[baseURL,currentImages])
+  }, [baseURL, currentImages]);
 
   /*Handlers*/
   function handleCarousels(num: number): void {
@@ -81,25 +83,26 @@ export default function MovieGallery({
           </div>
         </div>
         {/*button images*/}
-        <div className="flex flex-nowrap justify-center items-center gap-1 overflow-x-auto mt-2">
+        <ul className="flex flex-nowrap justify-center items-center gap-1 overflow-x-auto mt-2">
           {currentImages.map((img, index) => (
-            <button
-              key={index}
-              onClick={() => handleSmallImgClick(index)}
-              className="shrink-0"
-            >
-              <ImageWithFallback
-                src={baseURL + "w300" + img.file_path}
-                alt={`Gallery image ${title}`}
-                className={`w-25 h-full object-fill ${
-                  curImg == index
-                    ? "border-2 border-red-400 dark:border-red-600"
-                    : ""
-                }`}
-              />
-            </button>
+            <li key={index}>
+              <button
+                onClick={() => handleSmallImgClick(index)}
+                className="shrink-0"
+              >
+                <ImageWithFallback
+                  src={baseURL + "w300" + img.file_path}
+                  alt={`Gallery image ${title}`}
+                  className={`w-25 h-full object-fill ${
+                    curImg == index
+                      ? "border-2 border-red-400 dark:border-red-600"
+                      : ""
+                  }`}
+                />
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

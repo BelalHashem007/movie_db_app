@@ -6,14 +6,18 @@ import { mdiArrowLeft } from "@mdi/js";
 import MovieInfo from "./components/MovieInfo";
 import MovieCast from "./components/MovieCast";
 import MovieGallery from "./components/MovieGallery";
-import { lazy, useEffect, useRef, useState } from "react";
+import { lazy, useRef, useState } from "react";
 import MovieDetailsSkeleton from "./components/MovieDetailsSkeleton";
+import useIntersection from "../../utility/useIntersection";
 
 const MovieReviews = lazy(() => import("./components/MovieReviews"));
+const MovieRecommendation = lazy(() => import("./components/MovieRecommendations"));
 
 export default function MovieDetails() {
   const [showReviews, setShowReviews] = useState<boolean>(false);
+  const [showRecommendations, setShowRecommendations] = useState<boolean>(false);
   const movieReviewsPlaceholderRef = useRef<HTMLDivElement>(null);
+  const movieRecommendationPlaceholderRef = useRef<HTMLDivElement>(null);
 
   const token = useAppSelector((state) => state.auth.token);
   const params = useParams();
@@ -25,21 +29,20 @@ export default function MovieDetails() {
     skip: !token,
   });
 
-  useEffect(() => {
-    if (!movieData || showReviews ) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].intersectionRatio <= 0) return;
-        setShowReviews(true);
-      },
-      { rootMargin: "400px" }
-    );
-
-    observer.observe(movieReviewsPlaceholderRef.current as HTMLDivElement);
-
-    return () => observer.disconnect();
-  }, [movieData, showReviews]);
-
+  useIntersection({
+    target: movieReviewsPlaceholderRef,
+    isLoading: isLoading,
+    show: showReviews,
+    setShow: setShowReviews,
+  });
+  useIntersection({
+    target: movieRecommendationPlaceholderRef,
+    isLoading: isLoading,
+    show: showRecommendations,
+    setShow: setShowRecommendations,
+  });
+ 
+  //handlers
   function handleBack(): void {
     if (location.key !== "default") {
       navigate(-1);
@@ -72,6 +75,11 @@ export default function MovieDetails() {
             ref={movieReviewsPlaceholderRef}
           ></div>
           {showReviews && <MovieReviews id={movieid} />}
+          <div
+            id="MovieRecommendationPlaceHolder"
+            ref={movieRecommendationPlaceholderRef}
+          ></div>
+          {showRecommendations && <MovieRecommendation id={movieid} />}
         </div>
       )}
     </div>
