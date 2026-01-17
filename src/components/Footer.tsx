@@ -39,7 +39,7 @@ export default function Footer() {
   return (
     <footer className=" bg-gray-50 border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800 w-full shrink-0">
       <div className="container mx-auto">
-        <div className="grid grid-cols-[300px_1fr] gap-20 p-10">
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-20 p-10">
           <div>
             <div className="flex font-bold text-xl items-center dark:text-white text-gray-900 ">
               <Icon

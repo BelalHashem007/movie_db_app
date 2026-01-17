@@ -61,7 +61,7 @@ function Review({ review }: { review: Review }) {
       >
         {review.content}
       </p>
-      <div className="absolute top-4 right-4 dark:text-gray-400 text-gray-600 ">
+      <div className="absolute bottom-4 right-4 dark:text-gray-400 text-gray-600 ">
         {getDateFromIso(review.created_at)}
       </div>
       {totalLine > 2 && <button

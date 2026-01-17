@@ -49,9 +49,9 @@ export default function Home() {
     <div className=" my-5 flex gap-5 flex-col min-[500px]:px-5 container mx-auto px-2.5 justify-center">
       <section className="mx-auto">
         <nav aria-label="Movie Category">
-          <ul className="flex gap-2.5">
+          <ul className="flex gap-2.5 flex-wrap justify-center">
             {buttons.map((btn) => (
-              <li key={btn.label}>
+              <li key={btn.label} className="my-2">
                 <CategoryButton
                   key={btn.path}
                   label={btn.label}
@@ -69,7 +69,7 @@ export default function Home() {
           ) : (
             data?.results.map((movie) => (
               <li key={movie.id}>
-                <Movie movie={movie} />
+                <Movie movie={movie} place="home"/>
               </li>
             ))
           )}

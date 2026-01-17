@@ -34,6 +34,12 @@ button:hover {
   h2 {
     @apply text-3xl mb-6 dark:text-white text-gray-900
   }
+  * {
+    scrollbar-width: thin;
+  }
+  *.dark{
+    scrollbar-color: red orange;
+  }
 }
 
 

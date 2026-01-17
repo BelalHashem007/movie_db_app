@@ -30,6 +30,10 @@ export default function MovieGallery({
     });
   }, [baseURL, currentImages]);
 
+  function getImgURL(size: string) {
+    return baseURL + size + currentImages[curImg].file_path;
+  }
+
   /*Handlers*/
   function handleCarousels(num: number): void {
     if (num == 1) {
@@ -55,28 +59,32 @@ export default function MovieGallery({
             className="absolute top-1/2 -translate-y-1/2 z-10 group"
             onClick={() => handleCarousels(-1)}
           >
-            <div className="flex flex-col items-center justify-center p-4">
+            <div className="flex flex-col items-center justify-center p-2 min-[500px]:p-4">
               {/* Upper wing */}
-              <div className="w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors"></div>
+              <div className="w-4 min-[500px]:w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors"></div>
               {/* Lower wing */}
-              <div className="w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-3.75 "></div>
+              <div className="w-4 min-[500px]:w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-1.5 min-[500px]:mt-3.75 "></div>
             </div>
           </button>
           <button
             className="absolute top-1/2 -translate-y-1/2 z-10 group right-0"
             onClick={() => handleCarousels(1)}
           >
-            <div className="flex flex-col items-center justify-center p-4 rotate-180">
+            <div className="flex flex-col items-center justify-center p-2 min-[500px]:p-4 rotate-180">
               {/* Upper wing */}
-              <div className="w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors "></div>
+              <div className="w-4 min-[500px]:w-7 h-1 bg-white -rotate-45 group-hover:bg-blue-300 transition-colors "></div>
               {/* Lower wing */}
-              <div className="w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-3.75"></div>
+              <div className="w-4 min-[500px]:w-7 h-1 bg-white rotate-45 group-hover:bg-blue-300 transition-colors mt-1.5 min-[500px]:mt-3.75"></div>
             </div>
           </button>
           {/*Current shown image*/}
           <div className={`rounded-lg overflow-hidden aspect-video`}>
-            <ImageWithFallback
-              src={baseURL + "w1280" + currentImages[curImg].file_path}
+            <img
+              srcSet={`${getImgURL("w300")} 300w,${getImgURL("w780")} 780w,${getImgURL("w1280")} 1280w`}
+              sizes="(max-width: 500px) 300px,
+                    (max-width: 1000px) 780px,
+                    1280px"
+              src={getImgURL("w1280")}
               alt={`Gallery image ${title}`}
               className="w-full h-full object-fill"
             />
@@ -85,15 +93,12 @@ export default function MovieGallery({
         {/*button images*/}
         <ul className="flex flex-nowrap justify-center items-center gap-1 overflow-x-auto mt-2">
           {currentImages.map((img, index) => (
-            <li key={index}>
-              <button
-                onClick={() => handleSmallImgClick(index)}
-                className="shrink-0"
-              >
+            <li key={index} className="shrink-0">
+              <button onClick={() => handleSmallImgClick(index)}>
                 <ImageWithFallback
                   src={baseURL + "w300" + img.file_path}
                   alt={`Gallery image ${title}`}
-                  className={`w-25 h-full object-fill ${
+                  className={`w-15 sm:w-25 h-full object-fill ${
                     curImg == index
                       ? "border-2 border-red-400 dark:border-red-600"
                       : ""

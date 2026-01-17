@@ -6,16 +6,18 @@ import {
   mdiClockOutline,
   mdiCurrencyUsd,
 } from "@mdi/js";
-import ImageWithFallback from "../../../components/ImgWithFallback";
 import { getDuration } from "../../../utility/helperFunctions";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
-
-  const poster:string = "https://image.tmdb.org/t/p/w780" + movieData.poster_path;
-  const duration:string = movieData.runtime
+  function getImgURL(size: string) {
+    const poster: string =
+      `https://image.tmdb.org/t/p/${size}` + movieData.poster_path;
+    return poster;
+  }
+  const duration: string = movieData.runtime
     ? getDuration(movieData.runtime)
     : "Unknown";
-  const budget:string = new Intl.NumberFormat("en-US", {
+  const budget: string = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(movieData.budget);
@@ -27,7 +29,14 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <div className="rounded-lg overflow-hidden aspect-2/3">
-            <ImageWithFallback src={poster} alt={movieData.title} className="w-full h-full object-fill"/>
+            <img
+              srcSet={`${getImgURL("w780")} 780w, ${getImgURL("w342")} 342w`}
+              sizes="(max-width: 500px) 342px,
+                      780px"
+              src={getImgURL("w780")}
+              alt={movieData.title}
+              className="w-full h-full object-fill"
+            />
           </div>
         </div>
 
@@ -112,4 +121,3 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
     </section>
   );
 }
-
