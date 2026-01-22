@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { Link } from "react-router";
 import ImageWithFallback from "./ImgWithFallback";
+import { useAppSelector } from "../app/hooks";
 
 export interface Movie {
   id: string;
@@ -11,8 +12,8 @@ export interface Movie {
 }
 
 export default function Movie({ movie,place="home" }: { movie: Movie,place: "home" | "recommendation" }) {
-  
-  const imgSrc = "https://image.tmdb.org/t/p/w342" + movie.img_url;
+  const baseURL = useAppSelector(state=>state.img.url)
+  const imgSrc = `${baseURL}w342` + movie.img_url;
   const vote = Number(movie.vote_average).toFixed(1);
   const dateFormatted = movie.release_date ? format(movie.release_date, "MMM dd yyyy") : 'Unknown';
 

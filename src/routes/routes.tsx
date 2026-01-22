@@ -1,4 +1,5 @@
 import App from "../App";
+import SignUp from "../pages/auth/SignUp";
 import Home from "../pages/home/Home";
 import MovieDetails from "../pages/movie/MovieDetailsPage";
 
@@ -17,6 +18,10 @@ const routes = [
       },{
         path:"movie/:movieid",
         element:<MovieDetails/>
+      },
+      {
+        path:"signup",
+        element:<SignUp/>
       }
     ]
   },

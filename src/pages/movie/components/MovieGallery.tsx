@@ -13,6 +13,7 @@ export default function MovieGallery({
 }) {
   const [curImg, setCurImg] = useState<number>(0);
   const baseURL = useAppSelector((state) => state.img.url);
+  
   const currentImages: Backdrop[] = useMemo(
     () => images.backdrops.slice(0, 10),
     [images],

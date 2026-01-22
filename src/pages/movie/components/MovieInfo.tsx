@@ -7,16 +7,22 @@ import {
   mdiCurrencyUsd,
 } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
+import { useAppSelector } from "../../../app/hooks";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
+  
+  const baseURL = useAppSelector((state)=>state.img.url)
+
   function getImgURL(size: string) {
     const poster: string =
-      `https://image.tmdb.org/t/p/${size}` + movieData.poster_path;
+      `${baseURL}${size}` + movieData.poster_path;
     return poster;
   }
+
   const duration: string = movieData.runtime
     ? getDuration(movieData.runtime)
     : "Unknown";
+
   const budget: string = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

@@ -1,8 +1,12 @@
 import type { Credits } from "../../../app/apiSlice";
 import ImageWithFallback from "../../../components/ImgWithFallback";
+import { useAppSelector } from "../../../app/hooks";
 
 export default function MovieCast({credits}:{credits:Credits}) {
-    const url = "https://image.tmdb.org/t/p/w185"
+
+  const baseURL = useAppSelector((state)=>state.img.url);
+
+    const url = `${baseURL}w185`
     const top_five_actors = credits.cast.slice(0,5);
   return (
     <section className="mb-8">

@@ -9,10 +9,12 @@ import ScrollToTop from "./components/ScrollToTop.tsx";
 function App() {
   const dispatch = useAppDispatch();
 
+  //get token
   useEffect(() => {
     dispatch(initializeToken());
   }, [dispatch]);
 
+ 
   return (
     <>
         <ScrollToTop/>

@@ -29,6 +29,7 @@ export default function MovieDetails() {
     skip: !token,
   });
 
+  //intersections
   useIntersection({
     target: movieReviewsPlaceholderRef,
     isLoading: isLoading,
