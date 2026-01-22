@@ -1,10 +1,27 @@
 import Icon from "@mdi/react";
 import { mdiFilmstrip, mdiMagnify } from "@mdi/js";
 import { Link } from "react-router";
+import { selectCurrentUser } from "../app/authSlice/authSlice";
+import { useAppSelector } from "../app/hooks";
+import { signOut } from "../supabase/auth";
+import toast from "react-hot-toast";
 
 export default function Header() {
+  const user = useAppSelector(selectCurrentUser);
+
   const linksStyle =
     "p-2 rounded-lg dark:text-gray-300 dark:hover:bg-gray-800 text-gray-700 hover:bg-gray-100";
+
+  async function handleLogOut(){
+    const {error} = await signOut();
+    if (error)
+    {
+      toast.error(error.message)
+      return;
+    }
+    location.reload()
+  }
+
   return (
     <header className="h-20 shrink-0  bg-white border-b border-b-gray-200 dark:bg-gray-900 dark:border-gray-800  ">
       <div className="flex h-full items-center gap-5 justify-between container mx-auto">
@@ -37,33 +54,47 @@ export default function Header() {
             />
           </div>
         </div>
-        <nav>
-          <ul className="flex gap-5 items-center">
-            <li>
-              <Link to="movies/genre" className={linksStyle}>
-                Genres
-              </Link>
-            </li>
-            <li>
-              <Link to="watchlist" className={linksStyle}>
-                My Watchlist
-              </Link>
-            </li>
-            <li>
-              <Link to="login" className={linksStyle}>
-                Log in
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="signup"
-                className="bg-red-600 text-white hover:cursor-pointer hover:bg-red-700 px-4 py-2 rounded-lg"
-              >
-                Signup
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <div className="flex gap-5">
+          <nav>
+            <ul className="flex gap-5 items-center">
+              <li>
+                <Link to="movies/genre" className={linksStyle}>
+                  Genres
+                </Link>
+              </li>
+              <li>
+                <Link to="watchlist" className={linksStyle}>
+                  My Watchlist
+                </Link>
+              </li>
+              {!user && (
+                <>
+                  <li>
+                    <Link to="login" className={linksStyle}>
+                      Log in
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="signup"
+                      className="bg-red-600 text-white hover:cursor-pointer hover:bg-red-700 px-4 py-2 rounded-lg"
+                    >
+                      Signup
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </nav>
+          {user && (
+            <div className="flex gap-5">
+              <p>
+                Hello, <strong>{user.display_name}</strong>
+              </p>
+              <button onClick={handleLogOut}>Log out</button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -12,11 +12,10 @@ async function createAccount(email:string,password:string) {
         }
     })
     return {data,error};
-    } catch (error) {
-        console.error(error)
-        return {data:null,error};
+    } catch (err) {
+        console.error(err)
+        return {data:null,error:{message: "Something went wrong!"}};
     }
-    
 }
 
 function signInListener(callback: (userid:string | undefined)=>void){
@@ -27,4 +26,15 @@ function signInListener(callback: (userid:string | undefined)=>void){
     return data.subscription.unsubscribe;
 }
 
-export {createAccount,signInListener};
+async function signOut(){
+    try {
+        const {error} = await supabase.auth.signOut();
+        return {error}
+    } catch (err) {
+        console.error(err)
+        return {error:{message: "Something went wrong!"}}
+    }
+        
+} 
+
+export {createAccount,signInListener,signOut};

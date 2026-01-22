@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import Footer from "./components/Footer.tsx";
 import { Outlet } from "react-router";
 import ScrollToTop from "./components/ScrollToTop.tsx";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -14,16 +15,15 @@ function App() {
     dispatch(initializeToken());
   }, [dispatch]);
 
- 
   return (
     <>
-        <ScrollToTop/>
-          <Header />
-
-          <main className="grow">
-            <Outlet />
-          </main>
-          <Footer />
+      <ScrollToTop />
+      <Header />
+      <main className="grow">
+        <Outlet />
+      </main>
+      <Footer />
+      <Toaster />
     </>
   );
 }

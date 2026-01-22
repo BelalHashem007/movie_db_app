@@ -1,14 +1,23 @@
 import { useState } from "react";
 import { createAccount } from "../../supabase/auth";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit() {
     if (password.length > 6 && password === confirmPassword) {
-       await createAccount(email, password);
+       const {error} = await createAccount(email, password);
+       if (error){
+        toast.error(error?.message);
+        return;
+       }
+       toast.success("Your account creation is successful!")
+       navigate("/")
     }
   }
   return (

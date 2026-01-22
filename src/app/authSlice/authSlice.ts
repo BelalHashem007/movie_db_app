@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Database } from "../../supabase/supabase";
+import type { RootState } from "../store";
 
 export type User = Database["public"]["Tables"]["users"]["Row"];
 
@@ -20,6 +21,9 @@ const authSlice = createSlice({ name: "auth", initialState, reducers: {
         state.user = action.payload;
     }
 } });
+
+
+export const selectCurrentUser = (state:RootState)=> state.auth.user
 
 export const {initializeToken,setAuthState,setUser} = authSlice.actions;
 export default authSlice;
