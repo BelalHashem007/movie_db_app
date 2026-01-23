@@ -19,7 +19,7 @@ function App() {
     <>
       <ScrollToTop />
       <Header />
-      <main className="grow">
+      <main className="grow flex flex-col">
         <Outlet />
       </main>
       <Footer />
