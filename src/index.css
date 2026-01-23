@@ -8,42 +8,45 @@
   --skeleton-base: #eeeeee;
   --skeleton-shimmer: rgba(255, 255, 255, 0.6);
   --border-color: #e0e0e0;
+  --bg-toaster: white;
+  --color-toaster: black;
 }
 
-
-  :root.dark {
-    /* Dark Mode Colors */
-    --card-bg: #1e1e1e;
-    --skeleton-base: #333333;
-    --skeleton-shimmer: rgba(255, 255, 255, 0.05);
-    --border-color: #2d2d2d;
-  }
+:root.dark {
+  /* Dark Mode Colors */
+  --card-bg: #1e1e1e;
+  --skeleton-base: #333333;
+  --skeleton-shimmer: rgba(255, 255, 255, 0.05);
+  --border-color: #2d2d2d;
+  --bg-toaster: black;
+  --color-toaster: white;
+}
 
 /* some common styles*/
 html {
   font-family: "Arial", sans-serif;
   line-height: 1.5;
 }
-html *{
+html * {
   line-height: inherit;
 }
 button:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
 @layer base {
   h2 {
-    @apply text-3xl mb-6 dark:text-white text-gray-900
+    @apply text-3xl mb-6 dark:text-white text-gray-900;
   }
   * {
     scrollbar-width: thin;
   }
-  *.dark{
+  *.dark {
     scrollbar-color: red orange;
   }
 }
 
-
 /*other stuff*/
+
 .skeleton-card {
   width: 300px;
   height: 300px;
@@ -62,18 +65,18 @@ button:hover {
   background-repeat: no-repeat;
 
   /* SIZING: [Shimmer], [Title], [Date], [Image] */
-  background-size: 
-    200px 100%,  /* Shimmer */
-    150px 20px,   /* Title width/height */
-    80px 15px,    /* Date width/height */
-    100% 225px;   /* Image width/height */
+  background-size:
+    200px 100%,
+    /* Shimmer */ 150px 20px,
+    /* Title width/height */ 80px 15px,
+    /* Date width/height */ 100% 225px; /* Image width/height */
 
   /* POSITIONING: [Shimmer], [Title], [Date], [Image] */
-  background-position: 
-    -150% 0,      /* Shimmer (starts off-screen) */
-    20px 240px,   /* Title position */
-    20px 270px,   /* Date position */
-    0 0;          /* Image at top */
+  background-position:
+    -150% 0,
+    /* Shimmer (starts off-screen) */ 20px 240px,
+    /* Title position */ 20px 270px,
+    /* Date position */ 0 0; /* Image at top */
 
   animation: shimmer 1.5s infinite;
 }
@@ -81,11 +84,10 @@ button:hover {
 @keyframes shimmer {
   to {
     /* Move ONLY the first gradient (the shimmer) across the card */
-    background-position: 
-      250% 0, 
-      20px 240px, 
-      20px 270px, 
+    background-position:
+      250% 0,
+      20px 240px,
+      20px 270px,
       0 0;
   }
 }
-

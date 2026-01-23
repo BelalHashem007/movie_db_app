@@ -1,6 +1,6 @@
 import Icon from "@mdi/react";
 import { mdiFilmstrip, mdiMagnify } from "@mdi/js";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { selectCurrentUser } from "../app/authSlice/authSlice";
 import { useAppSelector } from "../app/hooks";
 import { signOut } from "../supabase/auth";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 
 export default function Header() {
   const user = useAppSelector(selectCurrentUser);
+  const navigate = useNavigate();
 
   const linksStyle =
     "p-2 rounded-lg dark:text-gray-300 dark:hover:bg-gray-800 text-gray-700 hover:bg-gray-100";
@@ -19,7 +20,7 @@ export default function Header() {
       toast.error(error.message)
       return;
     }
-    location.reload()
+    navigate("/")
   }
 
   return (

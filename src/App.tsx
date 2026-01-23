@@ -23,7 +23,14 @@ function App() {
         <Outlet />
       </main>
       <Footer />
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            backgroundColor: "var(--bg-toaster)",
+            color: "var(--color-toaster)",
+          },
+        }}
+      />
     </>
   );
 }

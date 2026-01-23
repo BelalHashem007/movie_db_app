@@ -5,6 +5,7 @@ type Props = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputClassName: string;
   placeholder: string;
+  required?:boolean
 };
 
 export default function Input({
@@ -14,6 +15,7 @@ export default function Input({
   onChange,
   inputClassName,
   placeholder,
+  required = false,
 }: Props) {
   return (
     <>
@@ -26,6 +28,7 @@ export default function Input({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        required={required}
       />
     </>
   );

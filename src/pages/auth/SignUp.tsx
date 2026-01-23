@@ -12,10 +12,12 @@ export default function SignUp() {
   const navigate = useNavigate();
   const inputStyle = "border p-2 rounded-[10px] border-gray-400 focus:outline w-full dark:border-gray-700 dark:bg-gray-800";
 
-  async function handleSubmit() {
+  async function handleSubmit(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const isValid = isValidEmail(email);
     if (!isValid) {
       toast.error("Please enter a valid email");
+      return;
     }
     if (password.length > 6 && password === confirmPassword) {
       const { error } = await createAccount(email, password);
@@ -27,6 +29,7 @@ export default function SignUp() {
       navigate("/");
     }
   }
+  
   return (
     <section className="flex items-center justify-center h-full grow">
       <div className="bg-white px-6 py-7 w-full max-w-md my-15 border border-gray-200 shadow-xl rounded-lg dark:bg-gray-900 dark:border-gray-800">
@@ -34,7 +37,7 @@ export default function SignUp() {
           <h2 className="mb-0 font-bold">Create Account</h2>
           <p className="text-gray-500 dark:text-gray-400">Join MovieDB to get started</p>
         </div>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <Input
               label="Email"
@@ -88,7 +91,7 @@ export default function SignUp() {
               )}
             </p>
           </div>
-          <button type="button" className="bg-red-600 text-white py-2 rounded-lg font-bold" onClick={handleSubmit}>
+          <button type="submit" className="bg-red-600 text-white py-2 rounded-lg font-bold">
             Sign Up
           </button>
         </form>
