@@ -1,4 +1,5 @@
 import App from "../App";
+import Login from "../pages/auth/LogIn";
 import SignUp from "../pages/auth/SignUp";
 import Home from "../pages/home/Home";
 import MovieDetails from "../pages/movie/MovieDetailsPage";
@@ -22,6 +23,10 @@ const routes = [
       {
         path:"signup",
         element:<SignUp/>
+      },
+      {
+        path:"login",
+        element:<Login/>
       }
     ]
   },

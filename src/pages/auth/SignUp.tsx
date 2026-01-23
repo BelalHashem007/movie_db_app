@@ -21,7 +21,7 @@ export default function SignUp() {
     }
   }
   return (
-    <>
+    <section>
       <h2>Sign Up</h2>
       <form>
         <label htmlFor="email">Email:</label>
@@ -60,6 +60,6 @@ export default function SignUp() {
         Password and confirmPassword must match :
         {password === confirmPassword ? "✓" : "✗"}{" "}
       </p>
-    </>
+    </section>
   );
 }
