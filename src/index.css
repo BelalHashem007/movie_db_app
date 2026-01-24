@@ -80,7 +80,6 @@ button:hover {
 
   animation: shimmer 1.5s infinite;
 }
-
 @keyframes shimmer {
   to {
     /* Move ONLY the first gradient (the shimmer) across the card */

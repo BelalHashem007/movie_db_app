@@ -21,6 +21,7 @@ async function createAccount(email: string, password: string) {
 function signInListener(callback: (userid: string | undefined) => void) {
   const { data } = supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") callback(session?.user.id);
+    else if (event === "SIGNED_OUT") callback(session?.user.id)
   });
   return data.subscription.unsubscribe;
 }

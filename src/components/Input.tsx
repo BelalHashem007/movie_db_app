@@ -8,7 +8,6 @@ type Props = {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  inputClassName: string;
   placeholder: string;
   required?: boolean;
   showEye?: boolean;
@@ -20,12 +19,13 @@ export default function Input({
   label,
   value,
   onChange,
-  inputClassName,
   placeholder,
   required = false,
   showEye = false,
 }: Props) {
   const [showInput, setShowInput] = useState<boolean>(false);
+  const inputStyle =
+    "border py-2 px-4 rounded-[10px] border-gray-400 focus:outline w-full dark:border-gray-700 dark:bg-gray-800";
   return (
     <>
       <label htmlFor={name} className="text-[0.875rem] mb-1">
@@ -35,7 +35,7 @@ export default function Input({
         type={showInput ? "text" : type}
         name={name}
         id={name}
-        className={`${inputClassName} ${showEye ? "pr-10" : ""}`}
+        className={`${inputStyle} ${showEye ? "pr-10" : ""}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

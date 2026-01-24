@@ -10,8 +10,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const inputStyle =
-    "border py-2 px-4 rounded-[10px] border-gray-400 focus:outline w-full dark:border-gray-700 dark:bg-gray-800";
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -50,8 +49,7 @@ export default function SignUp() {
               onChange={(e) => {
                 setEmail(e.currentTarget.value);
               }}
-              placeholder="Enter your email"
-              inputClassName={inputStyle}
+              placeholder=""
             />
           </div>
           <div className="flex flex-col relative">
@@ -63,8 +61,7 @@ export default function SignUp() {
               onChange={(e) => {
                 setPassword(e.currentTarget.value);
               }}
-              placeholder="Enter your password"
-              inputClassName={inputStyle}
+              placeholder=""
               showEye={true}
             />
             <p className="text-[0.875rem] text-gray-500 dark:text-gray-400 mt-1">
@@ -86,8 +83,7 @@ export default function SignUp() {
               onChange={(e) => {
                 setConfirmPassword(e.currentTarget.value);
               }}
-              placeholder="Confirm your password"
-              inputClassName={inputStyle}
+              placeholder=""
               showEye={true}
             />
             <p className="text-[0.875rem] text-gray-500 dark:text-gray-400 mt-1">
@@ -101,7 +97,7 @@ export default function SignUp() {
           </div>
           <button
             type="submit"
-            className="bg-red-600 text-white py-2 rounded-lg font-bold"
+            className="bg-red-600 text-white py-2 rounded-lg font-bold hover:bg-red-700 transition-colors"
           >
             Sign Up
           </button>

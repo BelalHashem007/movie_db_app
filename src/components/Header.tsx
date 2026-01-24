@@ -20,6 +20,7 @@ export default function Header() {
       toast.error(error.message)
       return;
     }
+    toast.success("You have been logged out!")
     navigate("/")
   }
 
