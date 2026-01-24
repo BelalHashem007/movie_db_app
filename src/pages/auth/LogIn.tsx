@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signIn } from "../../supabase/auth";
+import { signIn, signInAnonymously } from "../../supabase/auth";
 import { isValidEmail } from "../../utility/helperFunctions";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router";
@@ -12,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
+  //Handlers
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const isSuccess = isValidEmail(email);
@@ -23,6 +24,16 @@ export default function Login() {
     const { error } = await signIn(email, password);
     if (error) {
       toast.error("Invalid Credentials");
+      return;
+    }
+    toast.success("Login is successful");
+    navigate("/");
+  }
+
+  async function handleGuestLogin(){
+    const { error } = await signInAnonymously();
+    if (error) {
+      toast.error(error.message || "Something went wrong!");
       return;
     }
     toast.success("Login is successful");
@@ -74,6 +85,7 @@ export default function Login() {
         </div>
         <button
           type="button"
+          onClick={handleGuestLogin}
           className={`flex items-center w-full justify-center gap-1 mt-5 border p-2 rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50
             dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800  `}
         >

@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Database } from "../../supabase/supabase";
+import type {Tables } from "../../supabase/supabase";
 import type { RootState } from "../store";
 
-export type User = Database["public"]["Tables"]["users"]["Row"];
+export type User = Tables<'users'>;
 
 interface Auth {
     token:string

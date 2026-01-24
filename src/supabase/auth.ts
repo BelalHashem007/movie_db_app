@@ -52,4 +52,17 @@ async function signIn(email: string, password: string) {
   }
 }
 
-export { createAccount, signInListener, signOut, signIn };
+async function signInAnonymously(){
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    return { data, error };
+  } catch (err) {
+    console.error(err);
+    return {
+      data: { session: null, user: null },
+      error: { message: "Something went wrong!" },
+    };
+  }
+}
+
+export { createAccount, signInListener, signOut, signIn, signInAnonymously };

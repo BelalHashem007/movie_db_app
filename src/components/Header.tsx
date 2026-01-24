@@ -91,9 +91,9 @@ export default function Header() {
           {user && (
             <div className="flex gap-5">
               <p>
-                Hello, <strong>{user.display_name}</strong>
+                Hello, <strong>{user.display_name || "Anonymous User"}</strong>
               </p>
-              <button onClick={handleLogOut}>Log out</button>
+              <button onClick={handleLogOut} className="text-red-400">Log out</button>
             </div>
           )}
         </div>
