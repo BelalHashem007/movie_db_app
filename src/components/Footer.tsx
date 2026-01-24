@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function Footer() {
   const [selectValue, setSelectValue] = useState<string>(
-    localStorage.getItem("theme") || "system"
+    localStorage.getItem("theme") || "system",
   );
 
   useEffect(() => {
