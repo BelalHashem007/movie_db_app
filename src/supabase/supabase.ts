@@ -43,19 +43,19 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string | null
-          email: string
+          email: string | null
           id: string
         }
         Insert: {
           created_at?: string
           display_name?: string | null
-          email?: string
+          email?: string | null
           id: string
         }
         Update: {
           created_at?: string
           display_name?: string | null
-          email?: string
+          email?: string | null
           id?: string
         }
         Relationships: []
@@ -63,23 +63,46 @@ export type Database = {
       watchlist: {
         Row: {
           created_at: string
+          date: string | null
           id: number
+          img: string | null
           movie_id: number
-          user_id: number
+          overview: string | null
+          rate: number | null
+          title: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          date?: string | null
           id?: number
+          img?: string | null
           movie_id: number
-          user_id: number
+          overview?: string | null
+          rate?: number | null
+          title?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          date?: string | null
           id?: number
+          img?: string | null
           movie_id?: number
-          user_id?: number
+          overview?: string | null
+          rate?: number | null
+          title?: string | null
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "watchlist_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

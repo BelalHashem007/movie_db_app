@@ -1,10 +1,52 @@
 import { supabase } from "./setup";
 import type { User } from "../app/authSlice/authSlice";
 
-async function fetchUser(userid:string): Promise<User | null>{
-    const {data,error} = await supabase.from("users").select().eq("id",userid).maybeSingle();
-    if (error) console.error(error)
-    return data;
+export type MovieToAdd = {
+  movieid: number;
+  title: string;
+  img: string;
+  userid: string;
+  rating: number;
+  date: string;
+  overview: string;
+};
+
+async function fetchUser(userid: string): Promise<User | null> {
+  const { data, error } = await supabase
+    .from("users")
+    .select()
+    .eq("id", userid)
+    .maybeSingle();
+  if (error) console.error(error);
+  return data;
 }
 
-export {fetchUser}
+async function addMovieToWatchlist({
+  img,
+  movieid,
+  title,
+  userid,
+  date,
+  rating,
+  overview,
+}: MovieToAdd) {
+  try {
+    const { error } = await supabase
+      .from("watchlist")
+      .insert({
+        movie_id: movieid,
+        user_id: userid,
+        img,
+        title,
+        date,
+        overview,
+        rate: rating,
+      });
+    return { error };
+  } catch (err) {
+    console.error(err);
+    return { error: { message: "Something went wrong!" } };
+  }
+}
+
+export { fetchUser, addMovieToWatchlist };

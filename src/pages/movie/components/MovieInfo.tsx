@@ -8,14 +8,16 @@ import {
 } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
 import { useAppSelector } from "../../../app/hooks";
+import { type MovieToAdd,addMovieToWatchlist } from "../../../supabase/db";
+import toast from "react-hot-toast";
+import { selectCurrentUser } from "../../../app/authSlice/authSlice";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
-  
-  const baseURL = useAppSelector((state)=>state.img.url)
+  const baseURL = useAppSelector((state) => state.img.url);
+  const user = useAppSelector(selectCurrentUser)
 
   function getImgURL(size: string) {
-    const poster: string =
-      `${baseURL}${size}` + movieData.poster_path;
+    const poster: string = `${baseURL}${size}` + movieData.poster_path;
     return poster;
   }
 
@@ -27,6 +29,24 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
     style: "currency",
     currency: "USD",
   }).format(movieData.budget);
+
+  async function handleAddingToWatchlist(){
+        const movie:MovieToAdd = {
+      movieid: Number(movieData.id),
+      title: movieData.title,
+      overview: movieData.overview,
+      img: getImgURL("w342"),
+      rating:movieData.vote_average,
+      date:movieData.release_date,
+      userid:user?.id as string
+    };
+   const {error} = await addMovieToWatchlist(movie);
+   if (error){
+    toast.error(error.message)
+    return
+   }
+   toast.success(`${movie.title} has been added to watchlist`)
+  }
 
   return (
     <section
@@ -61,6 +81,11 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
               <span className={`text-xl dark:text-yellow-400 text-yellow-600`}>
                 {Number(movieData.vote_average).toFixed(1)}
               </span>
+            </div>
+            <div>
+              <button className="bg-green-500 text-black p-2" onClick={handleAddingToWatchlist}>
+                Add to watchlist
+              </button>
             </div>
           </div>
 
