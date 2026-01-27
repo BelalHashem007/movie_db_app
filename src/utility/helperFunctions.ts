@@ -47,5 +47,9 @@ function isValidEmail(email: string) {
   else return false;
 }
 
+function formatRating(rate:number):number {
+  return Number(rate.toFixed(1));
+}
 
-export { isApiResponse, getDateFromIso, getDuration, logger, isValidEmail };
+
+export { isApiResponse, getDateFromIso, getDuration, logger, isValidEmail,formatRating };

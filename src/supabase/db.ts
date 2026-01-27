@@ -10,7 +10,7 @@ export type MovieToAdd = {
   date: string;
   overview: string;
 };
-
+// user table stuff
 async function fetchUser(userid: string): Promise<User | null> {
   const { data, error } = await supabase
     .from("users")
@@ -21,6 +21,8 @@ async function fetchUser(userid: string): Promise<User | null> {
   return data;
 }
 
+
+// watchlist table stuff
 async function addMovieToWatchlist({
   img,
   movieid,
@@ -49,4 +51,15 @@ async function addMovieToWatchlist({
   }
 }
 
-export { fetchUser, addMovieToWatchlist };
+async function getAllWatchlistMovieId(userid: string) {
+  const { data, error } = await supabase
+    .from("watchlist")
+    .select('movie_id,title,img,rate,date,overview')
+    .eq("user_id", userid);
+  if (error) {
+    console.error(error);
+  }
+  return {data,error};
+}
+
+export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId };
