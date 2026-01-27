@@ -1,10 +1,27 @@
-import { type WatchlistPayloadItem } from "../../app/watchListSlice/watchListSlice";
+import { type WatchlistPayloadItem,removeFromWatchlist } from "../../app/watchListSlice/watchListSlice";
 import { formatRating } from "../../utility/helperFunctions";
 import Rating from "../../components/Rating";
+import { removeMovieFromWatchlist } from "../../supabase/db";
+import { useAppSelector,useAppDispatch } from "../../app/hooks";
+import { selectCurrentUser } from "../../app/authSlice/authSlice";
+import toast from "react-hot-toast";
 
 type Props = { watchlist: WatchlistPayloadItem };
 
 export default function WatchList({ watchlist }: Props) {
+  const user = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
+
+  async function handleRemove() {
+    const {error} = await removeMovieFromWatchlist(watchlist.movie_id, user?.id);
+    if (error){
+        toast.error(error.message)
+        return;
+    }
+    dispatch(removeFromWatchlist(watchlist.movie_id));
+    toast.success(`${watchlist.title} Removed from Watchlist`);
+  }
+
   return (
     <div className="border rounded-lg p-2 flex gap-4 dark:bg-gray-800 bg-white border-gray-200 dark:border-gray-700">
       <img
@@ -21,6 +38,9 @@ export default function WatchList({ watchlist }: Props) {
           <Rating rating={formatRating(watchlist.rate || 0)} />
         </div>
         <p>{watchlist.overview}</p>
+        <button className="w-fit bg-zinc-600 p-2 text-white rounded-lg" onClick={handleRemove}>
+          Remove from Watchlist
+        </button>
       </div>
     </div>
   );

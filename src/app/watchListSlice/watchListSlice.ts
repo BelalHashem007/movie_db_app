@@ -22,9 +22,12 @@ const watchListSlice = createSlice({
             state.ids.push(action.payload[i].movie_id);
             state.map[action.payload[i].movie_id.toString()] = action.payload[i];
         }
+    },
+    removeFromWatchlist:(state,action:PayloadAction<number>)=>{
+        state.ids = state.ids.filter(id => id !== action.payload);
     }
   },
 });
 
-export const {initializeWatchListState} = watchListSlice.actions
+export const {initializeWatchListState,removeFromWatchlist} = watchListSlice.actions
 export default watchListSlice;

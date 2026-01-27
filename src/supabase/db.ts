@@ -51,6 +51,21 @@ async function addMovieToWatchlist({
   }
 }
 
+async function removeMovieFromWatchlist(movieid: number, userid: string | undefined) {
+  if (!userid) return { error: { message: "No user exists" } };
+  try {
+    const { error } = await supabase
+      .from("watchlist")
+      .delete()
+      .eq("movie_id", movieid)
+      .eq("user_id", userid);
+    return { error };
+  } catch (error) {
+    console.error(error);
+    return { error: { message: "Something went wrong!" } };
+  }
+}
+
 async function getAllWatchlistMovieId(userid: string) {
   const { data, error } = await supabase
     .from("watchlist")
@@ -62,4 +77,4 @@ async function getAllWatchlistMovieId(userid: string) {
   return {data,error};
 }
 
-export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId };
+export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId,removeMovieFromWatchlist };

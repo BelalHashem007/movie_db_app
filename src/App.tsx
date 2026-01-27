@@ -30,7 +30,7 @@ function App() {
       }
     };
     setWatchlist();
-  });
+  }, [dispatch, user]);
 
   return (
     <>
