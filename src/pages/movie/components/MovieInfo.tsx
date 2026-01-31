@@ -2,7 +2,7 @@ import type { MovieById } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
-import { useAppSelector,useAppDispatch } from "../../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { type MovieToAdd, addMovieToWatchlist } from "../../../supabase/db";
 import toast from "react-hot-toast";
 import { selectCurrentUser } from "../../../app/authSlice/authSlice";
@@ -14,6 +14,8 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
+  const watchlist = useAppSelector((state) => state.watchlist);
+  const isInWatchlist = watchlist.ids.indexOf(Number(movieData.id)) != -1;
 
   function getImgURL(size: string) {
     const poster: string = `${baseURL}${size}` + movieData.poster_path;
@@ -30,8 +32,8 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   }).format(movieData.budget);
 
   async function handleAddingToWatchlist() {
-    if (!user){
-      toast.error("Please login to add to watchlist")
+    if (!user) {
+      toast.error("Please login to add to watchlist");
       return;
     }
     const movie: MovieToAdd = {
@@ -49,8 +51,8 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {userid, ...movieWithoutUserid} = movie;
-    dispatch(addToWatchlist(movieWithoutUserid))
+    const { userid, ...movieWithoutUserid } = movie;
+    dispatch(addToWatchlist(movieWithoutUserid));
     toast.success(`${movie.title} has been added to watchlist`);
   }
 
@@ -83,8 +85,9 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
               <button
                 className="bg-green-500 text-black p-2"
                 onClick={handleAddingToWatchlist}
+                disabled = {isInWatchlist}
               >
-                Add to watchlist
+                {isInWatchlist ? "In Watchlist" : "Add to watchlist"}
               </button>
             </div>
           </div>
