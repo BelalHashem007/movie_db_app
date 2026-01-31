@@ -3,7 +3,9 @@ import type { RootState } from "./store";
 import type { Movie } from "../components/Movie";
 import { isApiResponse } from "../utility/helperFunctions";
 import { supabase } from "../supabase/setup";
+import { type Tables } from "../supabase/supabase";
 
+//3rd party api types
 type MovieResponse = {
   title: string;
   release_date: string;
@@ -64,10 +66,10 @@ export type Review = {
     username: string;
     avatar_path: string;
     rating: string;
-  },
-  content:string
-  created_at:string
-  id:string
+  };
+  content: string;
+  created_at: string;
+  id: string;
 };
 
 type MovieReviews = {
@@ -75,6 +77,10 @@ type MovieReviews = {
   page: number;
   results: Review[];
 };
+
+//supa db types
+
+export type MovieToWatchlist = Omit<Tables<"watchlist">, "created_at" | "id">;
 
 const movieApi = createApi({
   reducerPath: "movieApi",
@@ -110,11 +116,11 @@ const movieApi = createApi({
       query: (id) =>
         `movie/${id}?append_to_response=credits,images&language=en-US&include_image_language=en-US,null`,
     }),
-    getMovieReviewsById: builder.query<MovieReviews,string|number>({
-      query: (id)=> `movie/${id}/reviews?language=en-US&page=1`
+    getMovieReviewsById: builder.query<MovieReviews, string | number>({
+      query: (id) => `movie/${id}/reviews?language=en-US&page=1`,
     }),
-    getMovieRecommendation: builder.query<FilteredResponse,number|string>({
-      query: (id)=> `movie/${id}/recommendations?language=en-US&page=1`,
+    getMovieRecommendation: builder.query<FilteredResponse, number | string>({
+      query: (id) => `movie/${id}/recommendations?language=en-US&page=1`,
       transformResponse(res: unknown) {
         if (!isApiResponse(res)) {
           throw new Error("Invalid API Response");
@@ -129,21 +135,42 @@ const movieApi = createApi({
         return { total_pages: res.total_pages, results };
       },
     }),
-    deleteWatchlistItem: builder.mutation<number,{movie_id:number, user_id:string}>({
-    queryFn : async ({movie_id,user_id})=>{
-      const {error} =  await supabase
-      .from("watchlist")
-      .delete()
-      .eq("movie_id", movie_id)
-      .eq("user_id", user_id);
-      if (error) return {
-        error: {data:null,status:500,error:error}
-      }
-      return {data: movie_id}
-    }
-  })
+    deleteWatchlistItem: builder.mutation<
+      number,
+      { movie_id: number; user_id: string }
+    >({
+      queryFn: async ({ movie_id, user_id }) => {
+        const { error } = await supabase
+          .from("watchlist")
+          .delete()
+          .eq("movie_id", movie_id)
+          .eq("user_id", user_id);
+        if (error)
+          return {
+            error: { data: null, status: 500, error: error },
+          };
+        return { data: movie_id };
+      },
+    }),
+    addWatchlistItem: builder.mutation<MovieToWatchlist, MovieToWatchlist>({
+      queryFn: async (movieData) => {
+        const { error } = await supabase
+          .from("watchlist")
+          .insert({
+            date: movieData.date,
+            img: movieData.img,
+            movie_id: movieData.movie_id,
+            title: movieData.title,
+            rate: movieData.rate,
+            overview: movieData.overview,
+            user_id: movieData.user_id,
+          });
+
+        if (error) return { error: { data: null, status: 500, error: error } };
+        return { data: movieData };
+      },
+    }),
   }),
-  
 });
 
 export const {
@@ -151,6 +178,7 @@ export const {
   useGetMovieByIdQuery,
   useGetMovieReviewsByIdQuery,
   useGetMovieRecommendationQuery,
-  useDeleteWatchlistItemMutation
+  useDeleteWatchlistItemMutation,
+  useAddWatchlistItemMutation
 } = movieApi;
 export default movieApi;

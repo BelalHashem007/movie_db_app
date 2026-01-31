@@ -23,35 +23,6 @@ async function fetchUser(userid: string): Promise<User | null> {
 
 
 // watchlist table stuff
-async function addMovieToWatchlist({
-  img,
-  movie_id,
-  title,
-  userid,
-  date,
-  rate,
-  overview,
-}: MovieToAdd) {
-  try {
-    const { error } = await supabase
-      .from("watchlist")
-      .insert({
-        movie_id,
-        user_id: userid,
-        img,
-        title,
-        date,
-        overview,
-        rate,
-      });
-    return { error };
-  } catch (err) {
-    console.error(err);
-    return { error: { message: "Something went wrong!" } };
-  }
-}
-
-
 
 async function getAllWatchlistMovieId(userid: string) {
   const { data, error } = await supabase
@@ -64,4 +35,4 @@ async function getAllWatchlistMovieId(userid: string) {
   return {data,error};
 }
 
-export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId };
+export { fetchUser,getAllWatchlistMovieId };

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
-  setAuthState,
-  setUser,
+  userLoggedIn,
+  userLoggedOut,
   selectCurrentUser,
 } from "../app/authSlice/authSlice";
 import { signInListener } from "../supabase/auth";
@@ -19,11 +19,9 @@ export default function Authentication({
   useEffect(() => {
     const checkAuthentication = async (userid: string | undefined) => {
       if (typeof userid === "undefined") {
-        dispatch(setUser(null))
-        dispatch(setAuthState(false));
+        dispatch(userLoggedOut())
       } else if (user?.id !== userid) {
-        dispatch(setUser(await fetchUser(userid)));
-        dispatch(setAuthState(true));
+        dispatch(userLoggedIn(await fetchUser(userid)));
       }
     };
     const unsubscribe = signInListener(checkAuthentication);

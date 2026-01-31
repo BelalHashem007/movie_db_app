@@ -1,19 +1,17 @@
-import type { MovieById } from "../../../app/apiSlice";
+import  { type MovieById,useAddWatchlistItemMutation,type MovieToWatchlist } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import { type MovieToAdd, addMovieToWatchlist } from "../../../supabase/db";
+import { useAppSelector } from "../../../app/hooks";
 import toast from "react-hot-toast";
 import { selectCurrentUser } from "../../../app/authSlice/authSlice";
 import Rating from "../../../components/Rating";
 import { formatRating } from "../../../utility/helperFunctions";
-import { addToWatchlist } from "../../../app/watchListSlice/watchListSlice";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const user = useAppSelector(selectCurrentUser);
-  const dispatch = useAppDispatch();
+  const [AddItem] = useAddWatchlistItemMutation()
   const watchlist = useAppSelector((state) => state.watchlist);
   const isInWatchlist = watchlist.ids.indexOf(Number(movieData.id)) != -1;
 
@@ -36,23 +34,23 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       toast.error("Please login to add to watchlist");
       return;
     }
-    const movie: MovieToAdd = {
+    const movie: MovieToWatchlist = {
       movie_id: Number(movieData.id),
       title: movieData.title,
       overview: movieData.overview,
       img: getImgURL("w342"),
       rate: movieData.vote_average,
       date: movieData.release_date,
-      userid: user?.id as string,
+      user_id: user?.id as string,
     };
-    const { error } = await addMovieToWatchlist(movie);
-    if (error) {
-      toast.error(error.message);
+
+    try {
+       await AddItem(movie).unwrap();
+    } catch (err) {
+      console.error(err)
+      toast.error(err.error.message || "Failed to add to watchlist");
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { userid, ...movieWithoutUserid } = movie;
-    dispatch(addToWatchlist(movieWithoutUserid));
     toast.success(`${movie.title} has been added to watchlist`);
   }
 
