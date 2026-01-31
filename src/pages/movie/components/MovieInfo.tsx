@@ -1,4 +1,8 @@
-import  { type MovieById,useAddWatchlistItemMutation,type MovieToWatchlist } from "../../../app/apiSlice";
+import {
+  type MovieById,
+  useAddWatchlistItemMutation,
+  type MovieToWatchlist,
+} from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
@@ -11,7 +15,7 @@ import { formatRating } from "../../../utility/helperFunctions";
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const user = useAppSelector(selectCurrentUser);
-  const [AddItem] = useAddWatchlistItemMutation()
+  const [AddItem] = useAddWatchlistItemMutation();
   const watchlist = useAppSelector((state) => state.watchlist);
   const isInWatchlist = watchlist.ids.indexOf(Number(movieData.id)) != -1;
 
@@ -29,7 +33,7 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
     currency: "USD",
   }).format(movieData.budget);
 
-  async function handleAddingToWatchlist() {
+  function handleAddingToWatchlist() {
     if (!user) {
       toast.error("Please login to add to watchlist");
       return;
@@ -44,14 +48,7 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       user_id: user?.id as string,
     };
 
-    try {
-       await AddItem(movie).unwrap();
-    } catch (err) {
-      console.error(err)
-      toast.error(err.error.message || "Failed to add to watchlist");
-      return;
-    }
-    toast.success(`${movie.title} has been added to watchlist`);
+    AddItem(movie);
   }
 
   return (
@@ -83,7 +80,7 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
               <button
                 className="bg-green-500 text-black p-2"
                 onClick={handleAddingToWatchlist}
-                disabled = {isInWatchlist}
+                disabled={isInWatchlist}
               >
                 {isInWatchlist ? "In Watchlist" : "Add to watchlist"}
               </button>

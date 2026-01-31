@@ -4,7 +4,6 @@ import Rating from "../../components/Rating";
 import { useDeleteWatchlistItemMutation } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUser } from "../../app/authSlice/authSlice";
-import toast from "react-hot-toast";
 
 type Props = { watchlist: WatchlistPayloadItem };
 
@@ -18,7 +17,6 @@ export default function WatchList({ watchlist }: Props) {
         movie_id: watchlist.movie_id,
         user_id: user?.id as string,
       }).unwrap();
-      toast.success(`${watchlist.title} Removed from Watchlist`);
     } catch (error) {
       console.error(error);
     }

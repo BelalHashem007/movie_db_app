@@ -3,6 +3,7 @@ import authSlice from "./authSlice/authSlice";
 import movieApi from "./apiSlice";
 import imageSlice from "./imageSlice/imageSlice";
 import watchListSlice from "./watchListSlice/watchListSlice";
+import { listenerMiddlware } from "./listenerMiddleware";
 
 const store = configureStore({
   reducer: {
@@ -12,7 +13,7 @@ const store = configureStore({
     watchlist: watchListSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(movieApi.middleware),
+    getDefaultMiddleware().prepend(listenerMiddlware.middleware).concat(movieApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

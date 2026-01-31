@@ -135,10 +135,7 @@ const movieApi = createApi({
         return { total_pages: res.total_pages, results };
       },
     }),
-    deleteWatchlistItem: builder.mutation<
-      number,
-      { movie_id: number; user_id: string }
-    >({
+    deleteWatchlistItem: builder.mutation<number,{ movie_id: number; user_id: string }>({
       queryFn: async ({ movie_id, user_id }) => {
         const { error } = await supabase
           .from("watchlist")
@@ -154,20 +151,18 @@ const movieApi = createApi({
     }),
     addWatchlistItem: builder.mutation<MovieToWatchlist, MovieToWatchlist>({
       queryFn: async (movieData) => {
-        const { error } = await supabase
-          .from("watchlist")
-          .insert({
-            date: movieData.date,
-            img: movieData.img,
-            movie_id: movieData.movie_id,
-            title: movieData.title,
-            rate: movieData.rate,
-            overview: movieData.overview,
-            user_id: movieData.user_id,
-          });
+        const { error } = await supabase.from("watchlist").insert({
+          date: movieData.date,
+          img: movieData.img,
+          movie_id: movieData.movie_id,
+          title: movieData.title,
+          rate: movieData.rate,
+          overview: movieData.overview,
+          user_id: movieData.user_id,
+        });
 
         if (error) return { error: { data: null, status: 500, error: error } };
-        return { data: movieData };
+        else return { data: movieData };
       },
     }),
   }),
@@ -179,6 +174,6 @@ export const {
   useGetMovieReviewsByIdQuery,
   useGetMovieRecommendationQuery,
   useDeleteWatchlistItemMutation,
-  useAddWatchlistItemMutation
+  useAddWatchlistItemMutation,
 } = movieApi;
 export default movieApi;

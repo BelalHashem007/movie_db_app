@@ -1,15 +1,6 @@
 import { supabase } from "./setup";
 import type { User } from "../app/authSlice/authSlice";
 
-export type MovieToAdd = {
-  movie_id: number;
-  title: string;
-  img: string;
-  userid: string;
-  rate: number;
-  date: string;
-  overview: string;
-};
 // user table stuff
 async function fetchUser(userid: string): Promise<User | null> {
   const { data, error } = await supabase
