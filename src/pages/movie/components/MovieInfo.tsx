@@ -2,16 +2,18 @@ import type { MovieById } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
-import { useAppSelector } from "../../../app/hooks";
+import { useAppSelector,useAppDispatch } from "../../../app/hooks";
 import { type MovieToAdd, addMovieToWatchlist } from "../../../supabase/db";
 import toast from "react-hot-toast";
 import { selectCurrentUser } from "../../../app/authSlice/authSlice";
 import Rating from "../../../components/Rating";
 import { formatRating } from "../../../utility/helperFunctions";
+import { addToWatchlist } from "../../../app/watchListSlice/watchListSlice";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const user = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
 
   function getImgURL(size: string) {
     const poster: string = `${baseURL}${size}` + movieData.poster_path;
@@ -28,12 +30,16 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   }).format(movieData.budget);
 
   async function handleAddingToWatchlist() {
+    if (!user){
+      toast.error("Please login to add to watchlist")
+      return;
+    }
     const movie: MovieToAdd = {
-      movieid: Number(movieData.id),
+      movie_id: Number(movieData.id),
       title: movieData.title,
       overview: movieData.overview,
       img: getImgURL("w342"),
-      rating: movieData.vote_average,
+      rate: movieData.vote_average,
       date: movieData.release_date,
       userid: user?.id as string,
     };
@@ -42,6 +48,9 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       toast.error(error.message);
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {userid, ...movieWithoutUserid} = movie;
+    dispatch(addToWatchlist(movieWithoutUserid))
     toast.success(`${movie.title} has been added to watchlist`);
   }
 
@@ -68,7 +77,7 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
             {movieData.title}
           </h2>
 
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 ">
             <Rating rating={formatRating(movieData.vote_average)} />
             <div>
               <button

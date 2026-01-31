@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "./store";
 import type { Movie } from "../components/Movie";
 import { isApiResponse } from "../utility/helperFunctions";
+import { supabase } from "../supabase/setup";
 
 type MovieResponse = {
   title: string;
@@ -127,15 +128,29 @@ const movieApi = createApi({
         }));
         return { total_pages: res.total_pages, results };
       },
-    })
-    
+    }),
+    deleteWatchlistItem: builder.mutation<boolean,{movie_id:number, user_id:string}>({
+    queryFn : async ({movie_id,user_id})=>{
+      const {error} =  await supabase
+      .from("watchlist")
+      .delete()
+      .eq("movie_id", movie_id)
+      .eq("user_id", user_id);
+      if (error) return {
+        error: {data:null,status:500,error:error}
+      }
+      return {data: true}
+    }
+  })
   }),
+  
 });
 
 export const {
   useGetMovieListsQuery,
   useGetMovieByIdQuery,
   useGetMovieReviewsByIdQuery,
-  useGetMovieRecommendationQuery
+  useGetMovieRecommendationQuery,
+  useDeleteWatchlistItemMutation
 } = movieApi;
 export default movieApi;

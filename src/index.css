@@ -18,7 +18,7 @@
   --skeleton-base: #333333;
   --skeleton-shimmer: rgba(255, 255, 255, 0.05);
   --border-color: #2d2d2d;
-  --bg-toaster: black;
+  --bg-toaster: oklch(30.065% 0.07871 262.974);
   --color-toaster: white;
 }
 

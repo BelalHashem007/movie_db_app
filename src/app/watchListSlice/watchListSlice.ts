@@ -25,9 +25,13 @@ const watchListSlice = createSlice({
     },
     removeFromWatchlist:(state,action:PayloadAction<number>)=>{
         state.ids = state.ids.filter(id => id !== action.payload);
+    },
+    addToWatchlist:(state,action:PayloadAction<WatchlistPayloadItem>)=>{
+        state.ids.push(action.payload.movie_id);
+        state.map[action.payload.movie_id.toString()] = action.payload;
     }
   },
 });
 
-export const {initializeWatchListState,removeFromWatchlist} = watchListSlice.actions
+export const {initializeWatchListState,removeFromWatchlist,addToWatchlist} = watchListSlice.actions
 export default watchListSlice;

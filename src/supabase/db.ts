@@ -2,11 +2,11 @@ import { supabase } from "./setup";
 import type { User } from "../app/authSlice/authSlice";
 
 export type MovieToAdd = {
-  movieid: number;
+  movie_id: number;
   title: string;
   img: string;
   userid: string;
-  rating: number;
+  rate: number;
   date: string;
   overview: string;
 };
@@ -25,24 +25,24 @@ async function fetchUser(userid: string): Promise<User | null> {
 // watchlist table stuff
 async function addMovieToWatchlist({
   img,
-  movieid,
+  movie_id,
   title,
   userid,
   date,
-  rating,
+  rate,
   overview,
 }: MovieToAdd) {
   try {
     const { error } = await supabase
       .from("watchlist")
       .insert({
-        movie_id: movieid,
+        movie_id,
         user_id: userid,
         img,
         title,
         date,
         overview,
-        rate: rating,
+        rate,
       });
     return { error };
   } catch (err) {
@@ -51,20 +51,7 @@ async function addMovieToWatchlist({
   }
 }
 
-async function removeMovieFromWatchlist(movieid: number, userid: string | undefined) {
-  if (!userid) return { error: { message: "No user exists" } };
-  try {
-    const { error } = await supabase
-      .from("watchlist")
-      .delete()
-      .eq("movie_id", movieid)
-      .eq("user_id", userid);
-    return { error };
-  } catch (error) {
-    console.error(error);
-    return { error: { message: "Something went wrong!" } };
-  }
-}
+
 
 async function getAllWatchlistMovieId(userid: string) {
   const { data, error } = await supabase
@@ -77,4 +64,4 @@ async function getAllWatchlistMovieId(userid: string) {
   return {data,error};
 }
 
-export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId,removeMovieFromWatchlist };
+export { fetchUser, addMovieToWatchlist,getAllWatchlistMovieId };
