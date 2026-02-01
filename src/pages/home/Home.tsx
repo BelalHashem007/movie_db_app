@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useGetMovieListsQuery } from "../../app/apiSlice";
-import { useAppSelector } from "../../app/hooks";
 import Movie from "../../components/Movie";
 import { useSearchParams, useParams, NavLink } from "react-router";
 import Pagination from "../../components/Pagination";
@@ -16,7 +15,6 @@ const CATEGORY_MAP: Record<string, Category> = {
 
 export default function Home() {
   const { category } = useParams();
-  const token = useAppSelector((state) => state.auth.token);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = searchParams.get("page") || "1";
@@ -25,9 +23,6 @@ export default function Home() {
 
   const { data, isLoading } = useGetMovieListsQuery(
     { page, category: activeCategory },
-    {
-      skip: !token,
-    }
   );
 
   const buttons = [

@@ -1,36 +1,26 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Tables } from "../../supabase/supabase";
 import type { RootState } from "../store";
 
-export type User = Tables<"users">;
-
 interface Auth {
-  token: string;
-  authenticationState: boolean;
-  user: User | null;
+  userId: string | null;
 }
 const initialState: Auth = {
-  token: "",
-  authenticationState: false,
-  user: null,
+  userId: null,
 };
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    initializeToken: (state) => {
-      state.token = import.meta.env.VITE_API_TOKEN;
-    },
-    userLoggedIn: (state, action: PayloadAction<User | null>) => {
-      state.user = action.payload;
+    userLoggedIn: (state, action: PayloadAction<string | null>) => {
+      state.userId = action.payload;
     },
     userLoggedOut: (state)=>{
-        state.user = null;
+        state.userId = null;
     }
   }
 });
 
-export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectCurrentUserId = (state: RootState) => state.auth.userId;
 
-export const { initializeToken, userLoggedIn,userLoggedOut } = authSlice.actions;
+export const { userLoggedIn,userLoggedOut } = authSlice.actions;
 export default authSlice;

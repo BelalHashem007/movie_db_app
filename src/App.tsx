@@ -1,10 +1,8 @@
 import Header from "./components/Header";
 import {
-  initializeToken,
-  selectCurrentUser,
+  selectCurrentUserId,
 } from "./app/authSlice/authSlice.ts";
-import { useAppDispatch, useAppSelector } from "./app/hooks.ts";
-import { useEffect } from "react";
+import { useAppSelector } from "./app/hooks.ts";
 import Footer from "./components/Footer.tsx";
 import { Outlet } from "react-router";
 import ScrollToTop from "./components/ScrollToTop.tsx";
@@ -13,13 +11,9 @@ import { useGetAllWatchlistQuery } from "./app/apiSlice.ts";
 import { skipToken } from "@reduxjs/toolkit/query";
 
 function App() {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectCurrentUser);
-  useGetAllWatchlistQuery(user?.id ?? skipToken);
-  //get token
-  useEffect(() => {
-    dispatch(initializeToken());
-  }, [dispatch]);
+  const userId = useAppSelector(selectCurrentUserId);
+  //get watchlist if user is logged in
+  useGetAllWatchlistQuery(userId ?? skipToken);
 
   return (
     <>

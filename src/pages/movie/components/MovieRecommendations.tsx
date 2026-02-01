@@ -4,7 +4,7 @@ import Movie from "../../../components/Movie";
 export default function MovieRecommendation({ id }: { id: number | string }) {
   const { data: movieRecommendation } = useGetMovieRecommendationQuery(id);
 
-  if (!movieRecommendation) return <></>;
+  if (!movieRecommendation || movieRecommendation.results.length === 0) return <></>;
 
   return (
     <section>

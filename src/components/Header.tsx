@@ -1,13 +1,16 @@
 import Icon from "@mdi/react";
 import { mdiFilmstrip, mdiMagnify } from "@mdi/js";
 import { Link, useNavigate } from "react-router";
-import { selectCurrentUser } from "../app/authSlice/authSlice";
+import { selectCurrentUserId } from "../app/authSlice/authSlice";
 import { useAppSelector } from "../app/hooks";
 import { signOut } from "../supabase/auth";
 import toast from "react-hot-toast";
+import { useGetUserQuery } from "../app/apiSlice";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function Header() {
-  const user = useAppSelector(selectCurrentUser);
+  const userId = useAppSelector(selectCurrentUserId);
+  const {data:user} = useGetUserQuery(userId ?? skipToken)
   const navigate = useNavigate();
 
   const linksStyle =
@@ -69,7 +72,7 @@ export default function Header() {
                   My Watchlist
                 </Link>
               </li>
-              {!user && (
+              {!userId && (
                 <>
                   <li>
                     <Link to="login" className={linksStyle}>
@@ -88,7 +91,7 @@ export default function Header() {
               )}
             </ul>
           </nav>
-          {user && (
+          {userId && user && (
             <div className="flex gap-5">
               <p>
                 Hello, <strong>{user.display_name || "Anonymous User"}</strong>

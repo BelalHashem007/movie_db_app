@@ -1,6 +1,5 @@
 import { useParams, useLocation, useNavigate } from "react-router";
 import { useGetMovieByIdQuery } from "../../app/apiSlice";
-import { useAppSelector } from "../../app/hooks";
 import Icon from "@mdi/react";
 import { mdiArrowLeft } from "@mdi/js";
 import MovieInfo from "./components/MovieInfo";
@@ -18,16 +17,12 @@ export default function MovieDetails() {
   const [showRecommendations, setShowRecommendations] = useState<boolean>(false);
   const movieReviewsPlaceholderRef = useRef<HTMLDivElement>(null);
   const movieRecommendationPlaceholderRef = useRef<HTMLDivElement>(null);
-
-  const token = useAppSelector((state) => state.auth.token);
   const params = useParams();
   const movieid = params.movieid as string;
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { data: movieData, isLoading } = useGetMovieByIdQuery(movieid, {
-    skip: !token,
-  });
+  const { data: movieData, isLoading } = useGetMovieByIdQuery(movieid);
 
   //intersections
   useIntersection({

@@ -2,19 +2,19 @@ import { formatRating } from "../../utility/helperFunctions";
 import Rating from "../../components/Rating";
 import { useDeleteWatchlistItemMutation, type MovieToWatchlist } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
-import { selectCurrentUser } from "../../app/authSlice/authSlice";
+import { selectCurrentUserId } from "../../app/authSlice/authSlice";
 
 type Props = { watchlist: MovieToWatchlist };
 
 export default function WatchList({ watchlist }: Props) {
-  const user = useAppSelector(selectCurrentUser);
+  const userId = useAppSelector(selectCurrentUserId);
   const [deleteItem] = useDeleteWatchlistItemMutation();
 
   async function handleRemove() {
     try {
       await deleteItem({
         movie_id: watchlist.movie_id,
-        user_id: user?.id as string,
+        user_id: userId as string,
       }).unwrap();
     } catch (error) {
       console.error(error);

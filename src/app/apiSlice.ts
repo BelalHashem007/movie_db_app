@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "./store";
 import type { Movie } from "../components/Movie";
 import { isApiResponse } from "../utility/helperFunctions";
 import { supabase } from "../supabase/setup";
 import type { Tables } from "../supabase/supabase";
-import type {  AppStartListener } from "./listenerMiddleware";
+import type { AppStartListener } from "./listenerMiddleware";
 import { isAnyOf } from "@reduxjs/toolkit";
 
 //     3rd party api types
@@ -96,11 +95,9 @@ const movieApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
+    prepareHeaders: (headers) => {
+      const token = import.meta.env.VITE_API_TOKEN;
+      headers.set("authorization", `Bearer ${token}`);
       return headers;
     },
   }),
@@ -149,6 +146,17 @@ const movieApi = createApi({
     }),
     //           Supabase SDK
     //-----------------------------------
+    //--User
+    getUser: builder.query<Tables<"users">, string>({
+      queryFn: async (user_id) => {
+        const {data,error} = await supabase.from("users").select().eq("id", user_id).maybeSingle();
+        if (error)
+          return { error: { data: null, status: 500, error } };
+        if (!data)
+          return { error: { data: null, status: 404, error:"User not found" } };
+        return {data}
+      },
+    }),
     //--WatchList
     getAllWatchlist: builder.query<MovieToWatchlist[], string>({
       queryFn: async (user_id) => {
@@ -160,7 +168,10 @@ const movieApi = createApi({
         return { data };
       },
     }),
-    deleteWatchlistItem: builder.mutation< number,{ movie_id: number; user_id: string }>({
+    deleteWatchlistItem: builder.mutation<
+      number,
+      { movie_id: number; user_id: string }
+    >({
       queryFn: async ({ movie_id, user_id }) => {
         const { error } = await supabase
           .from("watchlist")
@@ -189,7 +200,10 @@ const movieApi = createApi({
         }
       },
     }),
-    addWatchlistItem: builder.mutation<MovieToWatchlistWithUserID,MovieToWatchlistWithUserID>({
+    addWatchlistItem: builder.mutation<
+      MovieToWatchlistWithUserID,
+      MovieToWatchlistWithUserID
+    >({
       queryFn: async (movieData) => {
         const { error } = await supabase.from("watchlist").insert({
           date: movieData.date,
@@ -241,29 +255,27 @@ export const deleteWatchlistListener = (
       movieApi.endpoints.deleteWatchlistItem.matchRejected,
     ),
     effect: async (action) => {
-        const { toast } = await import("react-hot-toast");
-        if (movieApi.endpoints.deleteWatchlistItem.matchFulfilled(action))
-            toast.success("Movie has been removed from watchlist!");
-        else if (movieApi.endpoints.deleteWatchlistItem.matchRejected(action))
-            toast.error("Something went wrong! Try again please.");
+      const { toast } = await import("react-hot-toast");
+      if (movieApi.endpoints.deleteWatchlistItem.matchFulfilled(action))
+        toast.success("Movie has been removed from watchlist!");
+      else if (movieApi.endpoints.deleteWatchlistItem.matchRejected(action))
+        toast.error("Something went wrong! Try again please.");
     },
   });
 };
 
-export const addWatchlistListener = (
-  startAppListening: AppStartListener,
-) => {
+export const addWatchlistListener = (startAppListening: AppStartListener) => {
   startAppListening({
     matcher: isAnyOf(
       movieApi.endpoints.addWatchlistItem.matchFulfilled,
       movieApi.endpoints.addWatchlistItem.matchRejected,
     ),
     effect: async (action) => {
-        const { toast } = await import("react-hot-toast");
-        if (movieApi.endpoints.addWatchlistItem.matchFulfilled(action))
-            toast.success("Movie has been added to watchlist!");
-        else if (movieApi.endpoints.addWatchlistItem.matchRejected(action))
-            toast.error("Something went wrong! Try again please.");
+      const { toast } = await import("react-hot-toast");
+      if (movieApi.endpoints.addWatchlistItem.matchFulfilled(action))
+        toast.success("Movie has been added to watchlist!");
+      else if (movieApi.endpoints.addWatchlistItem.matchRejected(action))
+        toast.error("Something went wrong! Try again please.");
     },
   });
 };
@@ -276,5 +288,6 @@ export const {
   useDeleteWatchlistItemMutation,
   useAddWatchlistItemMutation,
   useGetAllWatchlistQuery,
+  useGetUserQuery,
 } = movieApi;
 export default movieApi;
