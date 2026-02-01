@@ -1,7 +1,8 @@
 import {
   type MovieById,
   useAddWatchlistItemMutation,
-  type MovieToWatchlist,
+  useGetAllWatchlistQuery,
+  type MovieToWatchlistWithUserID,
 } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
 import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
@@ -11,13 +12,14 @@ import toast from "react-hot-toast";
 import { selectCurrentUser } from "../../../app/authSlice/authSlice";
 import Rating from "../../../components/Rating";
 import { formatRating } from "../../../utility/helperFunctions";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const user = useAppSelector(selectCurrentUser);
   const [AddItem] = useAddWatchlistItemMutation();
-  const watchlist = useAppSelector((state) => state.watchlist);
-  const isInWatchlist = watchlist.ids.indexOf(Number(movieData.id)) != -1;
+  const {data:watchlist} = useGetAllWatchlistQuery(user?.id ?? skipToken);
+  const isInWatchlist = !!watchlist?.find(item=>item.movie_id === Number(movieData.id));
 
   function getImgURL(size: string) {
     const poster: string = `${baseURL}${size}` + movieData.poster_path;
@@ -38,7 +40,7 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
       toast.error("Please login to add to watchlist");
       return;
     }
-    const movie: MovieToWatchlist = {
+    const movie: MovieToWatchlistWithUserID = {
       movie_id: Number(movieData.id),
       title: movieData.title,
       overview: movieData.overview,

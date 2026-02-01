@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice/authSlice";
 import movieApi from "./apiSlice";
 import imageSlice from "./imageSlice/imageSlice";
-import watchListSlice from "./watchListSlice/watchListSlice";
 import { listenerMiddlware } from "./listenerMiddleware";
 
 const store = configureStore({
@@ -10,7 +9,6 @@ const store = configureStore({
     auth: authSlice.reducer,
     [movieApi.reducerPath]: movieApi.reducer,
     img:imageSlice.reducer,
-    watchlist: watchListSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(listenerMiddlware.middleware).concat(movieApi.middleware),

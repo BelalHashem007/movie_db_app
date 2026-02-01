@@ -1,11 +1,10 @@
-import { type WatchlistPayloadItem } from "../../app/watchListSlice/watchListSlice";
 import { formatRating } from "../../utility/helperFunctions";
 import Rating from "../../components/Rating";
-import { useDeleteWatchlistItemMutation } from "../../app/apiSlice";
+import { useDeleteWatchlistItemMutation, type MovieToWatchlist } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUser } from "../../app/authSlice/authSlice";
 
-type Props = { watchlist: WatchlistPayloadItem };
+type Props = { watchlist: MovieToWatchlist };
 
 export default function WatchList({ watchlist }: Props) {
   const user = useAppSelector(selectCurrentUser);

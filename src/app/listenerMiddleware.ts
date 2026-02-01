@@ -1,6 +1,6 @@
 import { createListenerMiddleware,addListener } from "@reduxjs/toolkit";
 import type { RootState,AppDispatch } from "./store";
-import { deleteWatchlistListener,addWatchlistListener } from "./watchListSlice/watchListSlice";
+import { deleteWatchlistListener,addWatchlistListener } from "./apiSlice";
 
 //setup
 export const listenerMiddlware = createListenerMiddleware();

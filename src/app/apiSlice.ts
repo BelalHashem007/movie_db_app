@@ -3,9 +3,12 @@ import type { RootState } from "./store";
 import type { Movie } from "../components/Movie";
 import { isApiResponse } from "../utility/helperFunctions";
 import { supabase } from "../supabase/setup";
-import { type Tables } from "../supabase/supabase";
+import type { Tables } from "../supabase/supabase";
+import type {  AppStartListener } from "./listenerMiddleware";
+import { isAnyOf } from "@reduxjs/toolkit";
 
-//3rd party api types
+//     3rd party api types
+//---------------------------------
 type MovieResponse = {
   title: string;
   release_date: string;
@@ -78,10 +81,17 @@ type MovieReviews = {
   results: Review[];
 };
 
-//supa db types
+//          supa db types
+//---------------------------------
+export type MovieToWatchlist = Omit<
+  Tables<"watchlist">,
+  "created_at" | "id" | "user_id"
+>;
 
-export type MovieToWatchlist = Omit<Tables<"watchlist">, "created_at" | "id">;
+export type MovieToWatchlistWithUserID = MovieToWatchlist & { user_id: string };
 
+//          Api Slice
+//---------------------------------
 const movieApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
@@ -95,6 +105,8 @@ const movieApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    //       TMDB API Endpoints
+    //--------------------------------
     getMovieLists: builder.query<FilteredResponse, GetMovieListsArgument>({
       query: ({ page, category }) =>
         `movie/${category}?language=en-US&page=${page}`,
@@ -135,7 +147,20 @@ const movieApi = createApi({
         return { total_pages: res.total_pages, results };
       },
     }),
-    deleteWatchlistItem: builder.mutation<number,{ movie_id: number; user_id: string }>({
+    //           Supabase SDK
+    //-----------------------------------
+    //--WatchList
+    getAllWatchlist: builder.query<MovieToWatchlist[], string>({
+      queryFn: async (user_id) => {
+        const { data, error } = await supabase
+          .from("watchlist")
+          .select("movie_id,title,img,rate,date,overview")
+          .eq("user_id", user_id);
+        if (error) return { error: { data: null, status: 500, error } };
+        return { data };
+      },
+    }),
+    deleteWatchlistItem: builder.mutation< number,{ movie_id: number; user_id: string }>({
       queryFn: async ({ movie_id, user_id }) => {
         const { error } = await supabase
           .from("watchlist")
@@ -148,8 +173,23 @@ const movieApi = createApi({
           };
         return { data: movie_id };
       },
+      async onQueryStarted(
+        { movie_id, user_id },
+        { dispatch, queryFulfilled },
+      ) {
+        const patchResult = dispatch(
+          movieApi.util.updateQueryData("getAllWatchlist", user_id, (draft) => {
+            return draft.filter((item) => item.movie_id != movie_id);
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
-    addWatchlistItem: builder.mutation<MovieToWatchlist, MovieToWatchlist>({
+    addWatchlistItem: builder.mutation<MovieToWatchlistWithUserID,MovieToWatchlistWithUserID>({
       queryFn: async (movieData) => {
         const { error } = await supabase.from("watchlist").insert({
           date: movieData.date,
@@ -164,9 +204,69 @@ const movieApi = createApi({
         if (error) return { error: { data: null, status: 500, error: error } };
         else return { data: movieData };
       },
+      async onQueryStarted(movieData, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          movieApi.util.updateQueryData(
+            "getAllWatchlist",
+            movieData.user_id,
+            (draft) => {
+              draft.unshift({
+                date: movieData.date,
+                img: movieData.img,
+                movie_id: movieData.movie_id,
+                title: movieData.title,
+                rate: movieData.rate,
+                overview: movieData.overview,
+              });
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });
+
+//listeners
+export const deleteWatchlistListener = (
+  startAppListening: AppStartListener,
+) => {
+  startAppListening({
+    matcher: isAnyOf(
+      movieApi.endpoints.deleteWatchlistItem.matchFulfilled,
+      movieApi.endpoints.deleteWatchlistItem.matchRejected,
+    ),
+    effect: async (action) => {
+        const { toast } = await import("react-hot-toast");
+        if (movieApi.endpoints.deleteWatchlistItem.matchFulfilled(action))
+            toast.success("Movie has been removed from watchlist!");
+        else if (movieApi.endpoints.deleteWatchlistItem.matchRejected(action))
+            toast.error("Something went wrong! Try again please.");
+    },
+  });
+};
+
+export const addWatchlistListener = (
+  startAppListening: AppStartListener,
+) => {
+  startAppListening({
+    matcher: isAnyOf(
+      movieApi.endpoints.addWatchlistItem.matchFulfilled,
+      movieApi.endpoints.addWatchlistItem.matchRejected,
+    ),
+    effect: async (action) => {
+        const { toast } = await import("react-hot-toast");
+        if (movieApi.endpoints.addWatchlistItem.matchFulfilled(action))
+            toast.success("Movie has been added to watchlist!");
+        else if (movieApi.endpoints.addWatchlistItem.matchRejected(action))
+            toast.error("Something went wrong! Try again please.");
+    },
+  });
+};
 
 export const {
   useGetMovieListsQuery,
@@ -175,5 +275,6 @@ export const {
   useGetMovieRecommendationQuery,
   useDeleteWatchlistItemMutation,
   useAddWatchlistItemMutation,
+  useGetAllWatchlistQuery,
 } = movieApi;
 export default movieApi;
