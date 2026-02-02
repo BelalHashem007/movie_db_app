@@ -3,6 +3,8 @@ import Rating from "../../components/Rating";
 import { useDeleteWatchlistItemMutation, type MovieToWatchlist } from "../../app/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../app/authSlice/authSlice";
+import Icon from '@mdi/react';
+import { mdiTrashCan } from '@mdi/js';
 
 type Props = { watchlist: MovieToWatchlist };
 
@@ -42,10 +44,10 @@ export default function WatchList({ watchlist }: Props) {
         </div>
         <p>{watchlist.overview}</p>
         <button
-          className="w-fit bg-black hover:bg-gray-700  p-2 text-white rounded-lg hover:dark:bg-gray-900 transition-colors "
+          className="w-fit  bg-red-600 hover:bg-red-700  p-1 text-white rounded-lg transition-colors "
           onClick={handleRemove}
         >
-          Remove from Watchlist
+          <Icon path={mdiTrashCan} size={1} />
         </button>
       </div>
     </div>

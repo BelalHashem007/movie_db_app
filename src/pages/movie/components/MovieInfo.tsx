@@ -5,7 +5,13 @@ import {
   type MovieToWatchlistWithUserID,
 } from "../../../app/apiSlice";
 import Icon from "@mdi/react";
-import { mdiCalendarBlank, mdiClockOutline, mdiCurrencyUsd } from "@mdi/js";
+import {
+  mdiCalendarBlank,
+  mdiClockOutline,
+  mdiCurrencyUsd,
+  mdiBookmarkOutline,
+  mdiCheck,
+} from "@mdi/js";
 import { getDuration } from "../../../utility/helperFunctions";
 import { useAppSelector } from "../../../app/hooks";
 import toast from "react-hot-toast";
@@ -18,8 +24,10 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
   const baseURL = useAppSelector((state) => state.img.url);
   const userId = useAppSelector(selectCurrentUserId);
   const [AddItem] = useAddWatchlistItemMutation();
-  const {data:watchlist} = useGetAllWatchlistQuery(userId ?? skipToken);
-  const isInWatchlist = !!watchlist?.find(item=>item.movie_id === Number(movieData.id));
+  const { data: watchlist } = useGetAllWatchlistQuery(userId ?? skipToken);
+  const isInWatchlist = !!watchlist?.find(
+    (item) => item.movie_id === Number(movieData.id),
+  );
 
   function getImgURL(size: string) {
     const poster: string = `${baseURL}${size}` + movieData.poster_path;
@@ -80,11 +88,25 @@ export default function MovieInfo({ movieData }: { movieData: MovieById }) {
             <Rating rating={formatRating(movieData.vote_average)} />
             <div>
               <button
-                className="bg-green-500 text-black p-2"
+                className={isInWatchlist ? `bg-red-600 hover:bg-red-700 text-white p-2 flex gap-1 rounded-lg`: `bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 p-2 flex gap-1 rounded-lg
+                            dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white  dark:border-gray-600`}
                 onClick={handleAddingToWatchlist}
                 disabled={isInWatchlist}
               >
-                {isInWatchlist ? "In Watchlist" : "Add to watchlist"}
+                {isInWatchlist ? (
+                  <>
+                    {" "}
+                    <Icon path={mdiCheck} size={1} />{" "}
+                    <span>In Watchlist</span>
+                  </>
+                  
+                ) : (
+                  <>
+                    {" "}
+                    <Icon path={mdiBookmarkOutline} size={1} />{" "}
+                    <span>Add to Watchlist</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
