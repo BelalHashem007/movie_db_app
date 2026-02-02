@@ -46,6 +46,7 @@ export default function Input({
           className="p-2"
           type="button"
           onClick={() => setShowInput(!showInput)}
+          tabIndex={-1}
         >
           <Icon
             path={showInput ? mdiEyeOffOutline : mdiEyeOutline}

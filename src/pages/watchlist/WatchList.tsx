@@ -42,7 +42,7 @@ export default function WatchList({ watchlist }: Props) {
         </div>
         <p>{watchlist.overview}</p>
         <button
-          className="w-fit bg-gray-500 hover:bg-gray-700 dark:bg-gray-700 p-2 text-white rounded-lg hover:dark:bg-gray-900 transition-colors "
+          className="w-fit bg-black hover:bg-gray-700  p-2 text-white rounded-lg hover:dark:bg-gray-900 transition-colors "
           onClick={handleRemove}
         >
           Remove from Watchlist

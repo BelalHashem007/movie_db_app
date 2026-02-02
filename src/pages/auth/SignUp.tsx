@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { createAccount } from "../../supabase/auth";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router";
 import { isValidEmail } from "../../utility/helperFunctions";
 import Input from "../../components/Input";
+import { useCreateAccountMutation } from "../../app/apiSlice";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-
+  const [createAccount] = useCreateAccountMutation();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,13 +20,13 @@ export default function SignUp() {
       return;
     }
     if (password.length > 6 && password === confirmPassword) {
-      const { error } = await createAccount(email, password);
-      if (error) {
-        toast.error(error?.message);
-        return;
+      try {
+        await createAccount({ email, password }).unwrap();
+        toast.success("Your account creation is successful!");
+        navigate("/");
+      } catch {
+        toast.error("Failed to create account! Please try again.");
       }
-      toast.success("Your account creation is successful!");
-      navigate("/");
     }
   }
 

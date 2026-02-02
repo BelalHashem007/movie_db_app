@@ -3,13 +3,13 @@ import { mdiFilmstrip, mdiMagnify } from "@mdi/js";
 import { Link, useNavigate } from "react-router";
 import { selectCurrentUserId } from "../app/authSlice/authSlice";
 import { useAppSelector } from "../app/hooks";
-import { signOut } from "../supabase/auth";
 import toast from "react-hot-toast";
-import { useGetUserQuery } from "../app/apiSlice";
+import { useGetUserQuery,useLogOutMutation } from "../app/apiSlice";
 import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function Header() {
   const userId = useAppSelector(selectCurrentUserId);
+  const [logout] = useLogOutMutation();
   const {data:user} = useGetUserQuery(userId ?? skipToken)
   const navigate = useNavigate();
 
@@ -17,14 +17,13 @@ export default function Header() {
     "p-2 rounded-lg dark:text-gray-300 dark:hover:bg-gray-800 text-gray-700 hover:bg-gray-100";
 
   async function handleLogOut(){
-    const {error} = await signOut();
-    if (error)
-    {
-      toast.error(error.message)
-      return;
+    try {
+      await logout().unwrap();
+      toast.success("You have been logged out!")
+      navigate("/")
+    } catch {
+      toast.error("Failed to logout! Please try again.")
     }
-    toast.success("You have been logged out!")
-    navigate("/")
   }
 
   return (

@@ -146,15 +146,63 @@ const movieApi = createApi({
     }),
     //           Supabase SDK
     //-----------------------------------
+    //--Auth
+    logOut: builder.mutation<boolean, void>({
+      queryFn: async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) return { error: { data: false, status: 500, error } };
+        return { data: true };
+      },
+    }),
+    signIn: builder.mutation<boolean, { email: string; password: string }>({
+      queryFn: async ({ email, password }) => {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) return { error: { data: false, status: 500, error } };
+        return { data: true };
+      },
+    }),
+    signInAnonymously: builder.mutation<boolean, void>({
+      queryFn: async () => {
+        const { error } = await supabase.auth.signInAnonymously();
+        if (error) return { error: { data: false, status: 500, error } };
+        return { data: true };
+      },
+    }),
+    createAccount: builder.mutation<
+      boolean,
+      { email: string; password: string }
+    >({
+      queryFn: async ({ email, password }) => {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              display_name: email.split("@")[0],
+            },
+          },
+        });
+        if (error) return { error: { data: false, status: 500, error } };
+        return { data: true };
+      },
+    }),
     //--User
     getUser: builder.query<Tables<"users">, string>({
       queryFn: async (user_id) => {
-        const {data,error} = await supabase.from("users").select().eq("id", user_id).maybeSingle();
-        if (error)
-          return { error: { data: null, status: 500, error } };
+        const { data, error } = await supabase
+          .from("users")
+          .select()
+          .eq("id", user_id)
+          .maybeSingle();
+        if (error) return { error: { data: null, status: 500, error } };
         if (!data)
-          return { error: { data: null, status: 404, error:"User not found" } };
-        return {data}
+          return {
+            error: { data: null, status: 404, error: "User not found" },
+          };
+        return { data };
       },
     }),
     //--WatchList
@@ -289,5 +337,9 @@ export const {
   useAddWatchlistItemMutation,
   useGetAllWatchlistQuery,
   useGetUserQuery,
+  useLogOutMutation,
+  useSignInMutation,
+  useSignInAnonymouslyMutation,
+  useCreateAccountMutation,
 } = movieApi;
 export default movieApi;

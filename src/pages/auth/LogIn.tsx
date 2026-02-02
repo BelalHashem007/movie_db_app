@@ -1,16 +1,21 @@
 import { useState } from "react";
-import { signIn, signInAnonymously } from "../../supabase/auth";
 import { isValidEmail } from "../../utility/helperFunctions";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router";
 import Input from "../../components/Input";
 import Icon from "@mdi/react";
 import { mdiAccountOutline } from "@mdi/js";
+import {
+  useSignInMutation,
+  useSignInAnonymouslyMutation,
+} from "../../app/apiSlice";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
+  const [signIn] = useSignInMutation();
+  const [signInAnonymously] = useSignInAnonymouslyMutation();
 
   //Handlers
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -21,23 +26,23 @@ export default function Login() {
       return;
     }
 
-    const { error } = await signIn(email, password);
-    if (error) {
-      toast.error("Invalid Credentials");
-      return;
+    try {
+      await signIn({ email, password }).unwrap();
+      toast.success("Login is successful");
+      navigate("/");
+    } catch {
+      toast.error("Email/Password is incorrect!");
     }
-    toast.success("Login is successful");
-    navigate("/");
   }
 
-  async function handleGuestLogin(){
-    const { error } = await signInAnonymously();
-    if (error) {
-      toast.error(error.message || "Something went wrong!");
-      return;
+  async function handleGuestLogin() {
+    try {
+      await signInAnonymously().unwrap();
+      toast.success("Login is successful");
+      navigate("/");
+    } catch {
+      toast.error("Login Failed! Please try again.");
     }
-    toast.success("Login is successful");
-    navigate("/");
   }
 
   return (
