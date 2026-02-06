@@ -1,9 +1,13 @@
 import { useEffect } from "react";
-import { useGetMovieListsQuery } from "../../app/apiSlice";
+import {
+  useGetMovieListsQuery,
+  useGetMoviesWithGenreQuery,
+} from "../../app/apiSlice";
 import Movie from "../../components/Movie";
-import { useSearchParams, useParams, NavLink } from "react-router";
+import { useSearchParams, useParams, NavLink,useNavigate } from "react-router";
 import Pagination from "../../components/Pagination";
 import type { Category } from "../../app/apiSlice";
+import HomeFilter from "../../components/HomeFilter";
 
 
 const CATEGORY_MAP: Record<string, Category> = {
@@ -16,14 +20,22 @@ const CATEGORY_MAP: Record<string, Category> = {
 export default function Home() {
   const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
+  const genres = searchParams.get("with_genres");
   const page = searchParams.get("page") || "1";
+  const {data:genresMovies, isFetching:isLoadingGenres} =
+    useGetMoviesWithGenreQuery({genres:genres?.split(",") as string[],page},{skip:!genres});
+  
   const activeCategory: Category =
     (category && CATEGORY_MAP[category]) || "popular";
 
-  const { data, isLoading } = useGetMovieListsQuery(
-    { page, category: activeCategory },
-  );
+  const { data, isFetching:isLoadingNormal } = useGetMovieListsQuery({
+    page,
+    category: activeCategory,
+  },{skip:!!genres});
+
+  const movies = genres ? genresMovies : data;
+  const isDataLoading = genres ? isLoadingGenres : isLoadingNormal
 
   const buttons = [
     { label: "Popular", path: "" },
@@ -37,46 +49,55 @@ export default function Home() {
   }, [page]);
 
   function handlePagination(page: number) {
-    setSearchParams(`?page=${page}`);
+    const currentParams = Object.fromEntries([...searchParams])
+    setSearchParams({...currentParams,page:page.toString()})
+  }
+
+  //Filter movies
+  function handleFiltering(genres:number[]) {
+    navigate(`/discover/movie?page=1&with_genres=${genres.join(',')}`)
   }
 
   return (
-    <div className=" my-5 flex gap-5 flex-col min-[500px]:px-5 container mx-auto px-2.5 justify-center">
-      <section className="mx-auto">
-        <nav aria-label="Movie Category">
-          <ul className="flex gap-2.5 flex-wrap justify-center">
-            {buttons.map((btn) => (
-              <li key={btn.label} className="my-2">
-                <CategoryButton
-                  key={btn.path}
-                  label={btn.label}
-                  path={btn.path}
-                />
-              </li>
-            ))}
+    <div className="my-5 gap-5 flex flex-col sm:flex-row min-[500px]:px-5 container mx-auto px-2.5 sm:relative">
+      <HomeFilter handleFiltering={handleFiltering}/>
+      <div className="flex flex-col justify-center grow gap-5">
+        <section className="mx-auto">
+          <nav aria-label="Movie Category">
+            <ul className="flex gap-2.5 flex-wrap justify-center">
+              {buttons.map((btn) => (
+                <li key={btn.label} className="my-2">
+                  <CategoryButton
+                    key={btn.path}
+                    label={btn.label}
+                    path={btn.path}
+                  />
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+        <section>
+          <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(150px,350px))] justify-center">
+            {isDataLoading ? (
+              <LoadingMovie />
+            ) : (
+              movies?.results.map((movie) => (
+                <li key={movie.id}>
+                  <Movie movie={movie} place="home" />
+                </li>
+              ))
+            )}
           </ul>
-        </nav>
-      </section>
-      <section>
-        <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(150px,350px))] justify-center">
-          {isLoading ? (
-            <LoadingMovie />
-          ) : (
-            data?.results.map((movie) => (
-              <li key={movie.id}>
-                <Movie movie={movie} place="home"/>
-              </li>
-            ))
-          )}
-        </ul>
-      </section>
+        </section>
 
-      <section className="self-center">
-        <Pagination
-          handlePagination={handlePagination}
-          numPage={Number(page)}
-        />
-      </section>
+        <section className="self-center">
+          <Pagination
+            handlePagination={handlePagination}
+            numPage={Number(page)}
+          />
+        </section>
+      </div>
     </div>
   );
 }

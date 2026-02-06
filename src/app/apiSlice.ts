@@ -21,7 +21,7 @@ export interface ApiResponse {
   total_pages: string;
 }
 
-interface FilteredResponse {
+export interface FilteredResponse {
   results: Movie[];
   total_pages: string;
 }
@@ -143,6 +143,25 @@ const movieApi = createApi({
         }));
         return { total_pages: res.total_pages, results };
       },
+    }),
+    getMovieGenres: builder.query<{genres:Genre[]},void>({
+      query: ()=> 'genre/movie/list'
+    }),
+    getMoviesWithGenre: builder.query<FilteredResponse,{genres:string[],page:string|number}>({
+      query: ({genres,page}) => `discover/movie?with_genres=${genres.join(",")}&page=${page ?? 1}`,
+      transformResponse(res: unknown) {
+        if (!isApiResponse(res)) {
+          throw new Error("Invalid API Response");
+        }
+        const results: Movie[] = res.results.map((res) => ({
+          id: res.id,
+          title: res.title,
+          img_url: res.poster_path,
+          release_date: res.release_date,
+          vote_average: res.vote_average,
+        }));
+        return { total_pages: res.total_pages, results };
+      }
     }),
     //           Supabase SDK
     //-----------------------------------
@@ -341,5 +360,7 @@ export const {
   useSignInMutation,
   useSignInAnonymouslyMutation,
   useCreateAccountMutation,
+  useGetMovieGenresQuery,
+  useGetMoviesWithGenreQuery,
 } = movieApi;
 export default movieApi;
